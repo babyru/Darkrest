@@ -3,10 +3,13 @@
 import { navLinks } from "@/constants";
 import { ChevronLeftCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const router = useRouter();
 
   return (
     <div className="relative sm:hidden">
@@ -22,13 +25,16 @@ const MobileNav = () => {
         className={`absolute ${isOpen ? "right-0 opacity-100" : "-right-96 scale-90 opacity-45"} top-10 flex flex-col items-center rounded-md bg-button transition-all`}
       >
         {navLinks.map(({ id, name, href }) => (
-          <Link
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              router.push(href);
+            }}
             key={id}
-            href={href}
             className="w-full rounded py-2 pl-4 pr-10 text-start transition-all hover:bg-icon"
           >
-            <button onClick={() => setIsOpen(false)}>{name}</button>
-          </Link>
+            {name}
+          </button>
         ))}
       </div>
     </div>
