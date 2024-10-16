@@ -22,7 +22,7 @@ function ToastSimple() {
           });
         }}
       >
-        don't Show Toast
+        Show Toast
       </Button>
     </div>
   );
