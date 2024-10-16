@@ -7,17 +7,14 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { debounce } from "@/lib/debounce";
 import { SearchIcon } from "lucide-react";
 
 interface Post {
-  id: number;
+  id: string;
   title: string;
-  description: string;
-  image: string;
-  user: string;
-  userImage: string;
+  tags: string[];
 }
 
 interface ItemsProp {
@@ -27,9 +24,11 @@ interface ItemsProp {
 
 export function CustomCombobox({ items, placeholder }: ItemsProp) {
   const [selectedItem, setSelectedItem] = useState<string>("");
+  const [options, setOptions] = useState<string[]>([]);
   const [query, setQuery] = useState("");
 
   const router = useRouter();
+  const pathname = usePathname();
 
   const filteredItems =
     query === ""
@@ -37,6 +36,25 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
       : items.filter((item) =>
           item.title.toLowerCase().includes(query.toLowerCase()),
         );
+
+  // useEffect(() => {
+  //   if (query === "") {
+  //     items.forEach(({ title, tags }) => {
+  //       setOptions((prevValue) => [...prevValue, title, ...tags]);
+  //     });
+  //   } else {
+  //     items.filter(({ title, tags }) => {
+  //       if (
+  //         title.toLowerCase().includes(query.toLowerCase()) ||
+  //         tags.some((tag) =>
+  //           tag.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+  //         )
+  //       ) {
+  //         setOptions((prevValue) => [...prevValue, title, ...tags]);
+  //       }
+  //     });
+  //   }
+  // }, [query]);
 
   const debouncedPush = useCallback(
     debounce((path: string) => {
@@ -47,11 +65,15 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
 
   useEffect(() => {
     if (query) {
-      debouncedPush(`?query=${query.toLocaleLowerCase()}`);
+      debouncedPush(`/?query=${query.toLowerCase()}`);
     } else {
-      debouncedPush(`/`);
+      debouncedPush(pathname);
     }
-  }, [query]);
+  }, [query, pathname, debouncedPush]);
+
+  useEffect(() => {
+    setQuery("");
+  }, [pathname]);
 
   useEffect(() => {
     if (selectedItem) {
@@ -72,14 +94,14 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
           />
           <ComboboxInput
             aria-label="Assignee"
-            displayValue={(item: string) => item}
+            displayValue={(item: string) => query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={placeholder}
-            className="h-12 w-full rounded-full bg-button p-5 pl-12 text-foreground outline-none transition-all"
+            className="text-myForeground h-12 w-full rounded-full bg-button p-5 pl-12 outline-none transition-all"
           />
         </div>
 
-        <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-button shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <ComboboxOptions className="absolute z-10 mt-1 max-h-80 w-full overflow-auto rounded-md bg-button shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           {query && (
             <ComboboxOption
               value={query}
@@ -112,11 +134,11 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
             </ComboboxOption>
           )}
 
-          {filteredItems.map((item) => (
+          {filteredItems.slice(0, 10).map((option, index) => (
             <ComboboxOption
               as="div"
-              key={item.title}
-              value={item.title}
+              key={index}
+              value={option.title}
               className={({ focus }) =>
                 `relative cursor-default select-none py-2 pl-10 pr-4 transition-all ${
                   focus ? "bg-icon text-white" : "text-white/80"
@@ -130,7 +152,7 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
                       selected ? "font-medium" : "font-normal"
                     }`}
                   >
-                    {item.title}
+                    {option.title.toLocaleLowerCase()}
                   </span>
                   {selected ? (
                     <span
