@@ -1,11 +1,13 @@
 "use client";
 
-import { Star, UserCheck, UserRoundCheck } from "lucide-react";
+import { PencilIcon, Star, UserCheck, UserRoundCheck } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
 
 const ProfileHeroSection = ({
-  profile,
+  user,
+  avatar,
   banner = "",
   name,
   username,
@@ -13,7 +15,8 @@ const ProfileHeroSection = ({
   followers,
   following,
 }: {
-  profile: string;
+  user: string;
+  avatar: string;
   banner: string;
   name: string;
   username: string;
@@ -35,17 +38,17 @@ const ProfileHeroSection = ({
             alt="banner"
             width={1000}
             height={1000}
-            className={`h-96 w-full rounded-xl object-cover opacity-70`}
+            className={`h-72 w-full rounded-xl object-cover opacity-70 sm:h-96`}
             onLoad={() => {
               setIsBannerImageLoaded(true);
             }}
           />
         )}
         <div
-          className={`${banner ? "absolute -bottom-20 left-[50%] -translate-x-[50%]" : "mx-auto"} ${isUserImageLoaded ? "" : "bg-skeleton bg-myBackground"} border-myForeground max-h-40 min-h-40 min-w-40 max-w-40 overflow-hidden rounded-full border-2`}
+          className={`${banner ? "absolute -bottom-20 left-[50%] -translate-x-[50%]" : "mx-auto"} ${isUserImageLoaded ? "" : "bg-skeleton bg-myBackground"} max-h-40 min-h-40 min-w-40 max-w-40 overflow-hidden rounded-full border-2 border-myForeground`}
         >
           <Image
-            src={profile!}
+            src={avatar!}
             alt="profile"
             width={500}
             height={500}
@@ -58,9 +61,20 @@ const ProfileHeroSection = ({
       </div>
 
       <div
-        className={` ${banner ? "mt-24" : "mt-7"} text-myForeground mx-auto flex w-[70%] flex-col items-center justify-center gap-2`}
+        className={` ${banner ? "mt-24" : "mt-7"} mx-auto flex w-[70%] flex-col items-center justify-center gap-2 text-myForeground`}
       >
-        <h1 className="text-2xl font-bold">{name}</h1>
+        <div className="relative">
+          <h1 className="text-2xl font-bold">{name}</h1>
+          {username === user && (
+            <Link
+              href={`/profile/${user}/edit-profile/${user}`}
+              className={`secondary-btn mx-auto flex w-fit items-center justify-center gap-2 text-sm hover:bg-icon sm:absolute sm:-right-[130px] sm:top-0`}
+            >
+              Edit Profile <PencilIcon className="h-4 w-4" />
+            </Link>
+          )}
+        </div>
+
         {bio && <p className="text-center text-sm">{bio}</p>}
         <div className="flex items-center justify-center gap-2">
           <Image src={"/icons/logo.svg"} alt="profile" width={20} height={20} />

@@ -8,7 +8,7 @@ interface PostProp {
   title: string;
   image: string;
   name: string;
-  userImage: string;
+  avatar: string;
   tags: string[];
 }
 
@@ -44,14 +44,14 @@ const Posts = ({
   return (
     <div className="page-size mt-24 px-6">
       <Masonry breakpointCols={breakPoints} className="flex gap-5">
-        {filteredPosts.map(({ id, title, image, name, userImage }) => (
+        {filteredPosts.map(({ id, title, image, name, avatar }) => (
           <EditableCard
             key={id}
             id={`${id}`}
             title={title}
             image={image}
             name={name}
-            userImage={userImage}
+            avatar={avatar}
             user={user}
           />
         ))}

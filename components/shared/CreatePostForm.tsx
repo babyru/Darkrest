@@ -1,11 +1,12 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
-import { createPost, updatePost } from "@/lib/actions/image.action.";
 import { PutBlobResult } from "@vercel/blob";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
+import ImageUploader from "./ImageUploader";
+import { createPost, updatePost } from "@/lib/actions/post.action";
 
 const CreatePostForm = ({
   imageUrlProp,
@@ -69,67 +70,18 @@ const CreatePostForm = ({
         newBlob && setIsReadyToUpload(true);
       };
 
-      fetchBlob();
+      // fetchBlob();
     }
   };
 
   return (
     <>
       <div className="w-full">
-        <input
-          type="file"
-          accept="image/*"
-          id="image-uploader"
-          className="hidden"
-          onChange={handleImageUpload}
+        <ImageUploader
+          imageUrl={imageUrl}
+          handleImageUpload={handleImageUpload}
+          label={"postImage"}
         />
-        <label
-          htmlFor="image-uploader"
-          className="relative m-auto flex h-[600px] max-w-lg cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-icon bg-button shadow-inner"
-        >
-          {imageUrl && (
-            <>
-              <img
-                src={imageUrl}
-                alt="image"
-                className="h-full w-full object-cover"
-              />
-              <div
-                className="absolute bottom-0 left-0 flex h-full w-full items-center justify-center bg-icon/45 text-xl font-semibold text-white opacity-0 backdrop-blur-sm transition-all duration-300 hover:opacity-100"
-                onClick={() => setIsReadyToUpload(false)}
-              >
-                Change Picture
-              </div>
-            </>
-          )}
-
-          {!imageUrl && (
-            <>
-              <Upload className="h-10 w-10 text-icon" />
-              <p className="text-sm font-semibold text-icon">Upload Image</p>
-            </>
-          )}
-        </label>
-        {/* image link upload 👇. for now disabled */}
-        <>
-          {/* <hr className="my-5 border border-icon" />
-        <label
-          htmlFor="image-url"
-          className="text-sm font-semibold text-myForeground"
-        >
-          (Optional) Enter a valid image URL
-        </label>
-        <input
-          type="url"
-          id="image-url"
-          placeholder="Image URL"
-          className="input-style mt-1 text-myForeground/45 focus:text-myForeground"
-          value={image ? (image as string) : ""}
-          onInput={(e: ChangeEvent<HTMLInputElement>) =>
-            setImage(e.target.value)
-          }
-        /> */}
-        </>
       </div>
 
       <form

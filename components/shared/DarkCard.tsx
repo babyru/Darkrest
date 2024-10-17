@@ -7,13 +7,13 @@ const DarkCard = ({
   title,
   image,
   name,
-  userImage,
+  avatar,
 }: {
   id: string;
   title: string;
   image: string;
   name: string;
-  userImage: string;
+  avatar: string;
 }) => {
   return (
     <div className="mb-5 transition-all duration-300 hover:scale-[1.02]">
@@ -37,7 +37,7 @@ const DarkCard = ({
       >
         <div className="size-8 overflow-hidden rounded-full">
           <Image
-            src={userImage}
+            src={avatar}
             alt={name}
             width={200}
             height={200}

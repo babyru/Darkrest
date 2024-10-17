@@ -22,7 +22,7 @@
 }
 
 .primary-btn {
-  @apply rounded-full bg-button px-3 py-2 transition-all hover:bg-icon;
+  @apply rounded-full bg-button px-3 py-2 text-myForeground transition-all hover:bg-icon;
 }
 
 .secondary-btn {

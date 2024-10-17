@@ -8,14 +8,14 @@ const EditableCard = ({
   title,
   image,
   name,
-  userImage,
+  avatar,
   user,
 }: {
   id: string;
   title: string;
   image: string;
   name: string;
-  userImage: string;
+  avatar: string;
   user: string;
 }) => {
   return (
@@ -23,10 +23,10 @@ const EditableCard = ({
       <div className="relative h-fit w-full overflow-hidden rounded-xl bg-button">
         {user === name.toLocaleLowerCase().replace(" ", "_") && (
           <Link
-            href={`/profile/${name.toLocaleLowerCase().replace(" ", "_")}/${id}`}
+            href={`/profile/${name.toLocaleLowerCase().replace(" ", "_")}/edit-post/${id}`}
             className="primary-btn absolute right-2 top-2 flex h-10 w-10 items-center justify-center"
           >
-            <Pen className="text-myForeground h-full w-full" />
+            <Pen className="h-full w-full text-myForeground" />
           </Link>
         )}
 
@@ -41,7 +41,7 @@ const EditableCard = ({
         </Link>
       </div>
 
-      <h1 className="text-myForeground mb-2 mt-4 text-lg font-semibold">
+      <h1 className="mb-2 mt-4 text-lg font-semibold text-myForeground">
         {title}
       </h1>
 
@@ -51,14 +51,14 @@ const EditableCard = ({
       >
         <div className="size-8 overflow-hidden rounded-full">
           <Image
-            src={userImage}
+            src={avatar}
             alt={name}
             width={200}
             height={200}
             className="object-cover"
           />
         </div>
-        <h1 className="text-myForeground text-sm font-semibold">{name}</h1>
+        <h1 className="text-sm font-semibold text-myForeground">{name}</h1>
       </Link>
     </div>
   );

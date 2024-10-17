@@ -2,6 +2,7 @@ import Posts from "@/components/profile/Posts";
 import ProfileHeroSection from "@/components/profile/ProfileHeroSection";
 import AllPosts from "@/components/shared/AllPosts";
 import { posts, users } from "@/constants";
+import { PencilIcon } from "lucide-react";
 import Link from "next/link";
 
 const Profile = ({
@@ -20,14 +21,16 @@ const Profile = ({
     <div className="page-size mt-24 px-6">
       <ProfileHeroSection
         banner={userData?.banner!}
-        profile={userData?.image!}
+        avatar={userData?.avatar!}
         name={userData?.name!}
         username={userData?.username!}
         bio={userData?.bio!}
         followers={userData?.followers!}
         following={userData?.following!}
+        user={user}
       />
-      <nav className="text-myForeground mt-10 flex items-center justify-center gap-2">
+
+      <nav className="mt-10 flex items-center justify-center gap-2 text-myForeground">
         <Link
           href={`/profile/${profile}?page=posts`}
           className={`secondary-btn ${page === "posts" || page === undefined ? "bg-icon" : "bg-button hover:bg-icon"}`}

@@ -11,7 +11,7 @@ interface PostProp {
   title: string;
   image: string;
   name: string;
-  userImage: string;
+  avatar: string;
   likes: number;
   downloadUrl: string;
   links: string[];
@@ -141,7 +141,7 @@ const PostDetails = ({ details }: { details: PostProp }) => {
             className="flex max-h-14 min-h-14 min-w-14 max-w-14 overflow-hidden rounded-full"
           >
             <Image
-              src={details.userImage}
+              src={details.avatar}
               width={200}
               height={200}
               alt="user-image"
