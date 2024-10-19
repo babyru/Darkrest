@@ -15,7 +15,14 @@ const PostDetails = ({
   postDetail: PostProp;
   username: string;
 }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const currentUser = "noah_white";
+
+  const [isLiked, setIsLiked] = useState(
+    postDetail.likes.includes(currentUser) ? true : false,
+  );
+  const [numberOfLikes, setNumberOfLikes] = useState(
+    postDetail.likes.length || 0,
+  );
   const [copy, setCopy] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
@@ -25,8 +32,6 @@ const PostDetails = ({
 
   const pathname = usePathname();
   const { toast } = useToast();
-
-  const currentUser = "noah_white";
 
   const updateData = async (
     toBeUpdated: "saved" | "followers",
@@ -61,7 +66,7 @@ const PostDetails = ({
         .eq("username", currentUserDetails.username)
         .select();
 
-      console.log({ data, error });
+      console.log("updateData", { data, error });
     } catch (error) {
       console.log([error]);
     }
@@ -75,7 +80,41 @@ const PostDetails = ({
     updateData("followers", isFollowed, username, setIsFollowed);
   };
 
-  const handleLike = async () => {};
+  const handleLike = async () => {
+    const newIsLiked = !isLiked;
+    setIsLiked(newIsLiked);
+
+    let updatedLikes: string[] = [...postDetail.likes];
+
+    if (newIsLiked) {
+      if (!updatedLikes.includes(currentUser)) {
+        console.log("adding like");
+        updatedLikes.push(currentUser);
+      }
+    } else {
+      console.log("removing like");
+      updatedLikes = updatedLikes.filter((like) => like !== currentUser);
+    }
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("posts")
+        .update({ likes: updatedLikes })
+        .eq("id", postDetail.id)
+        .select();
+
+      if (error) throw error;
+
+      if (data) {
+        console.log("handleLike", data);
+        setNumberOfLikes(data[0].likes.length);
+        postDetail.likes = data[0].likes; // Update the postDetail prop
+      }
+    } catch (error) {
+      console.error("Error updating likes:", error);
+      setIsLiked(!newIsLiked);
+    }
+  };
 
   useEffect(() => {
     handleSavePost();
@@ -84,6 +123,11 @@ const PostDetails = ({
   useEffect(() => {
     handleFollow();
   }, [isFollowed]);
+
+  useEffect(() => {
+    setIsLiked(postDetail.likes.includes(currentUser));
+    setNumberOfLikes(postDetail.likes.length);
+  }, [postDetail.likes, currentUser]);
 
   // fetch current user details
   useEffect(() => {
@@ -204,10 +248,10 @@ const PostDetails = ({
           <div className="details-icon-container">
             <Heart
               className={`details-icon text-icon ${isLiked ? "text-pink-700" : "text-icon"}`}
-              onClick={() => setIsLiked((prevValue) => !prevValue)}
+              onClick={handleLike}
             />
             <p className={`-ml-2 font-semibold text-myForeground/70`}>
-              {postDetail.likes}
+              {numberOfLikes}
             </p>
           </div>
 

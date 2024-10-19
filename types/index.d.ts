@@ -11,7 +11,7 @@ declare type PostProp = {
   image: string;
   downloadUrl: string;
   name: string;
-  likes: number;
+  likes: string[];
   links: string[];
   tags: string[];
 };

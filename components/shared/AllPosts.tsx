@@ -27,7 +27,7 @@ const AllPosts = ({
       if (data) {
         setUsers(data);
       } else {
-        alert(`error fetching users`);
+        alert(`error fetching users allPost`);
         console.log(error);
       }
     };
