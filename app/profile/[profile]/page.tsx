@@ -1,47 +1,90 @@
+"use client";
+
 import Posts from "@/components/profile/Posts";
 import ProfileHeroSection from "@/components/profile/ProfileHeroSection";
 import supabaseClient from "@/utils/supabase";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const Profile = async ({
+const Profile = ({
   params: { profile },
   searchParams: { page },
 }: {
   params: { profile: string };
   searchParams: { page: string | undefined };
 }) => {
- const user = 'noah_white'
-  // const data = users.find((user) => user.username === profile!);
-  const { data: userData, error: userDataError } = await supabaseClient
-    .from("users")
-    .select("*")
-    .eq("username", profile);
+  const user = "noah_white";
+
+  const [userData, setUserData] = useState<UserProp>();
+  const [createdPosts, setCreatedPosts] = useState<PostProp[]>();
+  const [savedPost, setSavedPost] = useState<PostProp[]>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: userData, error: userDataError } = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("username", profile);
+
+      if (userDataError) {
+        console.error(userDataError);
+      } else {
+        setUserData(userData[0]);
+      }
+    };
+
+    fetchData();
+  }, [profile]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (userData) {
+        const { data: createdPosts, error: createdPostsError } =
+          await supabaseClient
+            .from("posts")
+            .select("*")
+            .in("id", userData.posts);
+
+        if (createdPostsError) {
+          console.error(createdPostsError);
+        } else {
+          setCreatedPosts(createdPosts);
+        }
+
+        const { data: savedPost, error: savedPostError } = await supabaseClient
+          .from("posts")
+          .select("*")
+          .in("id", userData.saved);
+
+        if (savedPostError) {
+          console.error(savedPostError);
+        } else {
+          setSavedPost(savedPost);
+        }
+      } else {
+        console.log("waiting for user data");
+      }
+    };
+
+    fetchPosts();
+  }, [userData]);
 
   if (userData) {
-    const { data: createdPosts, error: createdPostsError } =
-      await supabaseClient
-        .from("posts")
-        .select("*")
-        .in("id", userData[0].posts);
+    // console.log("createdPosts", createdPosts);
+    // console.log({ savedPost, createdPosts });
+    // console.log("userData", userData);
 
-    const { data: savedPost, error: savedPostError } = await supabaseClient
-      .from("posts")
-      .select("*")
-      .in("id", userData[0].saved);
-
-console.log(userData)
-
-    if (createdPosts && savedPost) {
+    if (createdPosts) {
       return (
         <div className="page-size mt-24 px-6">
           <ProfileHeroSection
-            banner={userData[0]?.banner!}
-            avatar={userData[0]?.avatar!}
-            name={userData[0]?.name!}
-            username={userData[0]?.username!}
-            bio={userData[0]?.bio!}
-            followers={userData[0]?.followers!}
-            following={userData[0]?.following!}
+            banner={userData?.banner!}
+            avatar={userData?.avatar!}
+            name={userData?.name!}
+            username={userData?.username!}
+            bio={userData?.bio!}
+            followers={userData?.followers!}
+            following={userData?.following!}
             user={user}
           />
 
@@ -62,18 +105,20 @@ console.log(userData)
 
           {page === "posts" || page === undefined ? (
             <Posts
-              query={userData[0]?.name!}
+              query={userData.name}
               posts={createdPosts}
               searchParams={page}
               user={user}
             />
-          ) : savedPost.length !== 0 ? (
-            <Posts
-              query={userData[0]?.name!}
-              posts={savedPost}
-              user={user}
-              searchParams={page}
-            />
+          ) : savedPost?.length !== 0 && savedPost !== null ? (
+            <>
+              <Posts
+                query={userData.name}
+                posts={savedPost || []}
+                user={user}
+                searchParams={page}
+              />
+            </>
           ) : (
             <div className="my-10 text-center text-lg font-semibold text-myForeground">
               No saved posts found
@@ -82,7 +127,7 @@ console.log(userData)
         </div>
       );
     } else {
-      alert("error loading data");
+      console.log("error loading data");
     }
   }
 };

@@ -5,7 +5,7 @@ import supabaseClient from "@/utils/supabase";
 import { Download, Heart, Link2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const PostDetails = ({
@@ -20,21 +20,23 @@ const PostDetails = ({
   const [isLiked, setIsLiked] = useState(
     postDetail.likes.includes(currentUser) ? true : false,
   );
-  const [numberOfLikes, setNumberOfLikes] = useState(
-    postDetail.likes.length || 0,
-  );
+  const [numberOfLikes, setNumberOfLikes] = useState(0);
   const [copy, setCopy] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
-  const [users, setUsers] = useState<UserProp[]>([]);
+  const [followers, setFollowers] = useState(0);
+  const [postUser, setPostUser] = useState<UserProp>();
   const [currentUserDetails, setCurrentUserDetails] = useState<UserProp>();
   const [isUserSeeing, setIsUserSeeing] = useState(false);
 
   const pathname = usePathname();
   const { toast } = useToast();
 
+  const router = useRouter();
+
+  // this updates data for save and follow on the current users end
   const updateData = async (
-    toBeUpdated: "saved" | "followers",
+    toBeUpdated: "saved" | "following",
     shouldSave: boolean,
     value: string,
     setData: Dispatch<SetStateAction<boolean>>,
@@ -44,7 +46,7 @@ const PostDetails = ({
     let savedUpdate: Array<string> = [];
 
     if (shouldSave) {
-      console.log(`added to ${toBeUpdated}`);
+      // console.log(`added to ${toBeUpdated}`);
       savedUpdate = [
         ...(currentUserDetails[toBeUpdated]?.filter((post) => post !== value) ||
           []),
@@ -66,7 +68,7 @@ const PostDetails = ({
         .eq("username", currentUserDetails.username)
         .select();
 
-      console.log("updateData", { data, error });
+      // console.log("updateData", { data, error });
     } catch (error) {
       console.log([error]);
     }
@@ -77,42 +79,86 @@ const PostDetails = ({
   };
 
   const handleFollow = async () => {
-    updateData("followers", isFollowed, username, setIsFollowed);
+    updateData("following", isFollowed, username, setIsFollowed);
   };
 
+  // handles the add and remove like
   const handleLike = async () => {
-    const newIsLiked = !isLiked;
-    setIsLiked(newIsLiked);
-
-    let updatedLikes: string[] = [...postDetail.likes];
-
-    if (newIsLiked) {
-      if (!updatedLikes.includes(currentUser)) {
-        console.log("adding like");
-        updatedLikes.push(currentUser);
-      }
+    let updatedLike: Array<string> = [];
+    if (!isLiked) {
+      // console.log("add like");
+      updatedLike = [
+        ...(postDetail.likes?.filter((like) => like !== currentUser) || []),
+        currentUser,
+      ];
+      setIsLiked(true);
     } else {
-      console.log("removing like");
-      updatedLikes = updatedLikes.filter((like) => like !== currentUser);
+      // console.log("removed like");
+      updatedLike = [
+        ...postDetail.likes.filter((like) => like !== currentUser),
+      ];
+      setIsLiked(false);
     }
 
     try {
       const { data, error } = await supabaseClient
         .from("posts")
-        .update({ likes: updatedLikes })
+        .update({ likes: updatedLike })
         .eq("id", postDetail.id)
         .select();
 
-      if (error) throw error;
-
       if (data) {
-        console.log("handleLike", data);
+        // console.log("handle like", { data, error });
         setNumberOfLikes(data[0].likes.length);
-        postDetail.likes = data[0].likes; // Update the postDetail prop
       }
     } catch (error) {
-      console.error("Error updating likes:", error);
-      setIsLiked(!newIsLiked);
+      console.log("got an error liking or removing like", { error });
+    }
+  };
+
+  const handleUpdateFollowing = async () => {
+    let updatedFollowers: Array<string> = [];
+
+    const { data, error } = await supabaseClient
+      .from("users")
+      .select("followers")
+      .eq("username", username);
+
+    if (data) {
+      if (!isFollowed) {
+        console.log("added follower");
+        updatedFollowers = [
+          ...(data[0].followers?.filter(
+            (follower: string) => follower !== currentUser,
+          ) || []),
+          currentUser,
+        ];
+      } else {
+        console.log("removed follower");
+
+        updatedFollowers = [
+          ...data[0].followers.filter(
+            (follower: string) => follower !== currentUser,
+          ),
+        ];
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from("users")
+          .update({ followers: updatedFollowers })
+          .eq("username", postUser?.username)
+          .select();
+
+        if (data) {
+          console.log({ data, error });
+          if (data[0].followers) {
+            setFollowers(data[0].followers.length);
+          }
+        }
+      } catch (error) {
+        console.log("got an error trying to update followers");
+      }
     }
   };
 
@@ -124,10 +170,25 @@ const PostDetails = ({
     handleFollow();
   }, [isFollowed]);
 
+  // setting the current number of likes
   useEffect(() => {
-    setIsLiked(postDetail.likes.includes(currentUser));
-    setNumberOfLikes(postDetail.likes.length);
-  }, [postDetail.likes, currentUser]);
+    const fetchPostDetails = async () => {
+      const { data, error } = await supabaseClient
+        .from("posts")
+        .select("*")
+        .eq("id", postDetail.id);
+
+      if (data) {
+        if (data[0].likes.includes(currentUser)) {
+          // console.log("is liked in supabase so updated to true");
+          setNumberOfLikes(data[0].likes?.length);
+          setIsLiked(true);
+        }
+      }
+    };
+
+    fetchPostDetails();
+  }, []);
 
   // fetch current user details
   useEffect(() => {
@@ -141,11 +202,11 @@ const PostDetails = ({
         // console.log(data[0]);
         setCurrentUserDetails(data[0]);
         if (data[0].saved?.includes(postDetail.id)) {
-          console.log("it is saved in supabase so updated to true");
+          // console.log("it is saved in supabase so updated to true");
           setIsSaved(true);
         }
         if (data[0].followers?.includes(username)) {
-          console.log("he is followed in supabase so updated to true");
+          // console.log("he is followed in supabase so updated to true");
           setIsFollowed(true);
         }
       }
@@ -171,7 +232,11 @@ const PostDetails = ({
         .select("*")
         .eq("name", postDetail.name);
       if (data) {
-        setUsers(data);
+        setPostUser(data[0]);
+        setFollowers(data[0].followers?.length || 0);
+        if (data[0].followers?.includes(currentUser)) {
+          setIsFollowed(true);
+        }
       } else {
         alert(`unable to fetch user ${error}`);
       }
@@ -180,8 +245,7 @@ const PostDetails = ({
     fetchUsers();
   }, []);
 
-  const userDetails = users.find((user) => user.name === postDetail.name);
-
+  // copies the url
   const handleCopy = () => {
     navigator.clipboard
       .writeText(pathname)
@@ -193,17 +257,17 @@ const PostDetails = ({
       });
   };
 
+  // sets copy back to false after a sec
   if (copy) {
     setTimeout(() => {
       setCopy(false);
     }, 1000);
   }
 
+  // calculates number of followers
   const NumberOfFollowers = () => {
-    const followers = userDetails?.followers;
-
     let numberOfFollowers = "";
-    const followerCount = Math.abs(followers?.length as number);
+    const followerCount = Math.abs(followers);
     const followerString = String(followerCount);
 
     switch (followerString.length) {
@@ -227,9 +291,14 @@ const PostDetails = ({
         numberOfFollowers = followerString;
     }
 
-    return numberOfFollowers;
+    if (Number.isNaN(followerCount)) {
+      return 0;
+    } else {
+      return numberOfFollowers;
+    }
   };
 
+  // extracts the host name from the links given
   const extractHostnameFromLink = (url: string) => {
     // This regex matches the protocol and hostname
     const regex = /^(?:https?:\/\/)?(?:www\.)?([^\/\n]+)/i;
@@ -291,11 +360,26 @@ const PostDetails = ({
 
       <div className="flex flex-col items-start justify-start gap-2">
         <h1 className="text-3xl font-semibold">{postDetail.title}</h1>
+
+        {postDetail.description && <p>{postDetail.description}</p>}
+
+        <div className="flex flex-wrap items-center justify-start gap-2">
+          {postDetail.tags &&
+            postDetail.tags.map((tag, i) => (
+              <p
+                key={i}
+                className="cursor-pointer text-myForeground/70 transition-all hover:text-icon"
+                onClick={() => router.push(`/?query=${tag.replace("#", "")}`)}
+              >
+                #{tag.includes("#") ? tag.replace("#", "") : tag}
+              </p>
+            ))}
+        </div>
         <div className="flex flex-wrap items-center justify-start gap-2">
           {postDetail.links &&
-            postDetail.links.map((link) => (
+            postDetail.links.map((link, i) => (
               <a
-                key={link}
+                key={i}
                 href={link}
                 target="_blank"
                 className="text-myForeground/70 underline transition-all hover:text-icon"
@@ -310,11 +394,11 @@ const PostDetails = ({
         <div className="flex items-center gap-2">
           <Link
             href={`/profile/${username}`}
-            className={`flex ${!userDetails?.avatar && "bg-skeleton relative"} max-h-14 min-h-14 min-w-14 max-w-14 overflow-hidden rounded-full`}
+            className={`flex ${!postUser?.avatar && "bg-skeleton relative"} max-h-14 min-h-14 min-w-14 max-w-14 overflow-hidden rounded-full`}
           >
-            {userDetails?.avatar && (
+            {postUser?.avatar && (
               <Image
-                src={userDetails?.avatar as string}
+                src={postUser?.avatar as string}
                 width={200}
                 height={200}
                 alt="avatar"
@@ -336,7 +420,10 @@ const PostDetails = ({
         {!isUserSeeing && (
           <button
             className={`secondary-btn ${isFollowed ? "bg-icon" : "bg-button hover:bg-icon"}`}
-            onClick={() => setIsFollowed((prevValue) => !prevValue)}
+            onClick={() => {
+              setIsFollowed((prevValue) => !prevValue);
+              handleUpdateFollowing();
+            }}
           >
             {isFollowed ? "Following" : "Follow"}
           </button>

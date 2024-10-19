@@ -9,17 +9,19 @@ import ImageUploader from "./ImageUploader";
 import { createPost, updatePost } from "@/utils/actions/post.action";
 
 const CreatePostForm = ({
+  idProp,
   imageUrlProp,
   imageDownloadUrlProp,
   titleProp,
   descriptionProp,
   linksProp,
   tagsProp,
-  likesProp,
   createOrUpdate = "create",
   isReadyToSubmit = false,
-  user,
+  username,
+  name,
 }: {
+  idProp?: string;
   imageUrlProp?: string;
   imageDownloadUrlProp?: string;
   titleProp?: string;
@@ -29,7 +31,8 @@ const CreatePostForm = ({
   likesProp?: number;
   createOrUpdate?: "create" | "update";
   isReadyToSubmit?: boolean;
-  user: string;
+  username: string;
+  name: string;
 }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(imageUrlProp || null);
   const [imageDownloadUrl, setImageDownloadUrl] = useState<string | null>(
@@ -106,7 +109,7 @@ const CreatePostForm = ({
         onSubmit={() => {
           createOrUpdate === "update" &&
             isReadyToUpload &&
-            router.push(`/profile/${user}/`);
+            router.push(`/profile/${username}/`);
         }}
         className="mb-10 flex w-full flex-col gap-10 md:mb-0"
       >
@@ -218,10 +221,10 @@ const CreatePostForm = ({
         />
 
         <input
-          type="number"
-          name="likes"
+          type="text"
+          name="username"
           hidden
-          value={likesProp || 0}
+          value={username}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setImageUrl(e.target.value)
           }
@@ -229,9 +232,19 @@ const CreatePostForm = ({
 
         <input
           type="text"
-          name="user"
+          name="id"
           hidden
-          value={user}
+          value={idProp || crypto.randomUUID()}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setImageUrl(e.target.value)
+          }
+        />
+
+        <input
+          type="text"
+          name="name"
+          hidden
+          value={name}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setImageUrl(e.target.value)
           }

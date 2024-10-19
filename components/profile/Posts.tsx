@@ -39,7 +39,7 @@ const Posts = ({
     fetchUserData();
   }, []);
 
-  console.log(posts);
+  // console.log(posts);
 
   const breakPoints = {
     default: 5,

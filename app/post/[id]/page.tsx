@@ -43,7 +43,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               username={username[0].username}
             />
           </section>
-          <AllPosts query={""} posts={allPosts as PostProp[]} />
+          <AllPosts query={singlePost[0]?.title || ""} />
         </div>
       );
     }

@@ -12,12 +12,12 @@ const EditPostPage = async ({
 
   console.log(post);
   if (post) {
-    const { data: username, error: usernameError } = await supabaseClient
+    const { data: userDetails, error: userDetailsError } = await supabaseClient
       .from("users")
-      .select("username")
+      .select("*")
       .eq("name", post[0].name);
 
-    if (username) {
+    if (userDetails) {
       return (
         <div className="m-auto mt-24 flex w-screen max-w-4xl flex-col gap-20 px-6 text-myForeground md:flex-row md:gap-10">
           <CreatePostForm
@@ -29,8 +29,10 @@ const EditPostPage = async ({
             imageUrlProp={post[0].image}
             imageDownloadUrlProp={post[0].downloadUrl!}
             isReadyToSubmit={true}
-            user={username[0].username as string}
+            username={userDetails[0].username as string}
+            name={userDetails[0].name as string}
             likesProp={post[0].likes}
+            idProp={post[0].id}
           />
         </div>
       );
