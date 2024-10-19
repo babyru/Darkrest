@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
 import ImageUploader from "./ImageUploader";
-import { createPost, updatePost } from "@/lib/actions/post.action";
+import { createPost, updatePost } from "@/utils/actions/post.action";
 
 const CreatePostForm = ({
   imageUrlProp,
@@ -15,6 +15,7 @@ const CreatePostForm = ({
   descriptionProp,
   linksProp,
   tagsProp,
+  likesProp,
   createOrUpdate = "create",
   isReadyToSubmit = false,
   user,
@@ -25,9 +26,10 @@ const CreatePostForm = ({
   descriptionProp?: string;
   linksProp?: string;
   tagsProp?: string;
+  likesProp?: number;
   createOrUpdate?: "create" | "update";
   isReadyToSubmit?: boolean;
-  user?: string;
+  user: string;
 }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(imageUrlProp || null);
   const [imageDownloadUrl, setImageDownloadUrl] = useState<string | null>(
@@ -70,7 +72,7 @@ const CreatePostForm = ({
         newBlob && setIsReadyToUpload(true);
       };
 
-      // fetchBlob();
+      fetchBlob();
     }
   };
 
@@ -210,6 +212,26 @@ const CreatePostForm = ({
           name="imageDownloadUrl"
           hidden
           value={imageDownloadUrl ? imageDownloadUrl : ""}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setImageUrl(e.target.value)
+          }
+        />
+
+        <input
+          type="number"
+          name="likes"
+          hidden
+          value={likesProp || 0}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setImageUrl(e.target.value)
+          }
+        />
+
+        <input
+          type="text"
+          name="user"
+          hidden
+          value={user}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setImageUrl(e.target.value)
           }

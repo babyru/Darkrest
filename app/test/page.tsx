@@ -2,14 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import supabaseClient from "@/utils/supabase";
+import { useEffect } from "react";
 
 function ToastSimple() {
   const { toast } = useToast();
 
-  console.log("Toast function:", toast); // Check if toast is defined
+  useEffect(() => {
+    const fetchData = async () => {
+      let { data, error } = await supabaseClient.from("posts").select("*");
+      console.log(data);
+    };
 
-  // Ensure your app is wrapped in a Toast Provider component
-  // ... existing code ...
+    fetchData();
+  }, []);
 
   return (
     <div className="mt-32">

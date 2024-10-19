@@ -8,35 +8,29 @@ import {
   ComboboxOptions,
 } from "@headlessui/react";
 import { usePathname, useRouter } from "next/navigation";
-import { debounce } from "@/lib/debounce";
+import { debounce } from "@/utils/debounce";
 import { SearchIcon } from "lucide-react";
 
-interface Post {
-  id: string;
-  title: string;
-  tags: string[];
-}
-
 interface ItemsProp {
-  items: Post[];
+  items: PostProp[];
   placeholder: string;
 }
 
 export function CustomCombobox({ items, placeholder }: ItemsProp) {
   const [selectedItem, setSelectedItem] = useState<string>("");
-  const [options, setOptions] = useState<string[]>([]);
   const [query, setQuery] = useState("");
-
+  
   const router = useRouter();
   const pathname = usePathname();
-
+  
   const filteredItems =
-    query === ""
-      ? items
-      : items.filter((item) =>
-          item.title.toLowerCase().includes(query.toLowerCase()),
-        );
+  query === ""
+  ? items
+  : items.filter((item) =>
+    item.title.toLowerCase().includes(query.toLowerCase()),
+);
 
+// const [options, setOptions] = useState<string[]>([]);
   // useEffect(() => {
   //   if (query === "") {
   //     items.forEach(({ title, tags }) => {
@@ -69,7 +63,7 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
     } else {
       debouncedPush(pathname);
     }
-  }, [query, pathname, debouncedPush]);
+  }, [selectedItem]);
 
   useEffect(() => {
     setQuery("");
@@ -97,7 +91,7 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
             displayValue={(item: string) => query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={placeholder}
-            className="text-myForeground h-12 w-full rounded-full bg-button p-5 pl-12 outline-none transition-all"
+            className="h-12 w-full rounded-full bg-button p-5 pl-12 text-myForeground outline-none transition-all"
           />
         </div>
 

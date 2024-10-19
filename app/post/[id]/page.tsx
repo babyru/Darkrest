@@ -1,31 +1,55 @@
 import AllPosts from "@/components/shared/AllPosts";
 import AmbientImage from "@/components/shared/AmbientImage";
 import PostDetails from "@/components/post/PostDetails";
-import { posts } from "@/constants";
+import supabaseClient from "@/utils/supabase";
 
-const page = ({ params }: { params: { id: string } }) => {
-  const post = posts.find((p) => p.id === params?.id);
+const page = async ({ params }: { params: { id: string } }) => {
+  const { data: allPosts, error: AllPostsError } = await supabaseClient
+    .from("posts")
+    .select("*");
 
-  console.log(post);
+  const { data: singlePost, error: singlePostError } = await supabaseClient
+    .from("posts")
+    .select("*")
+    .eq("id", params.id);
 
-  return (
-    <div className="page-size text-myForeground mt-24 px-6">
-      <section className="m-auto flex h-fit w-full max-w-4xl flex-col items-start justify-center gap-10 rounded-xl bg-button/25 p-5 md:flex-row">
-        <div className="w-full rounded-xl">
-          <AmbientImage
-            src={
-              "https://vjkurbrp7v9schki.public.blob.vercel-storage.com/(Edited%20images)-MLPTJSTSHEn5v87FlUEgEsOuLU0yU2.jpg"
-            }
-            alt={post?.title as string}
-            ambient={30}
-          />
+  console.log(singlePost);
+
+  if (singlePost) {
+    const { data: username, error: usernameError } = await supabaseClient
+      .from("users")
+      .select("username")
+      .eq("name", singlePost[0].name);
+
+    console.log("username", username);
+    if (username) {
+      return (
+        <div className="page-size mt-24 px-6 text-myForeground">
+          <section className="m-auto flex h-fit w-full max-w-4xl flex-col items-start justify-center gap-10 rounded-xl bg-button/25 p-5 md:flex-row">
+            <div className="w-full rounded-xl">
+              {singlePost[0]?.image ? (
+                <AmbientImage
+                  src={singlePost[0]?.image as string}
+                  alt={singlePost[0]?.title as string}
+                  ambient={30}
+                />
+              ) : (
+                <div className="bg-skeleton relative w-full"></div>
+              )}
+            </div>
+
+            <PostDetails
+              postDetail={singlePost[0]!}
+              username={username[0].username}
+            />
+          </section>
+          <AllPosts query={""} posts={allPosts as PostProp[]} />
         </div>
-
-        <PostDetails details={post!} />
-      </section>
-      <AllPosts query={""} posts={posts} />
-    </div>
-  );
+      );
+    }
+  } else {
+    alert("loading data");
+  }
 };
 
 export default page;

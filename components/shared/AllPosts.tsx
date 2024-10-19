@@ -1,17 +1,9 @@
 "use client";
 
 import DarkCard from "@/components/shared/DarkCard";
+import supabaseClient from "@/utils/supabase";
 import React, { useEffect } from "react";
 import Masonry from "react-masonry-css";
-
-interface PostProp {
-  id: string;
-  title: string;
-  image: string;
-  name: string;
-  avatar: string;
-  tags: string[];
-}
 
 const AllPosts = ({
   query = "",
@@ -27,14 +19,30 @@ const AllPosts = ({
   user?: string;
 }) => {
   const [filteredPosts, setFilteredPosts] = React.useState<PostProp[]>([]);
+  const [users, setUsers] = React.useState<UserProp[]>([]);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const { data, error } = await supabaseClient.from("users").select("*");
+      if (data) {
+        setUsers(data);
+      } else {
+        alert(`error fetching users`);
+        console.log(error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // this is sorting the data (posts)
   useEffect(() => {
     const sortedPosts = posts.sort((a, b) => {
       if (query) {
         if (
           a.name.toLowerCase().includes(query.toLowerCase() as string) ||
           a.title.toLocaleLowerCase().includes(query as string) ||
-          a.tags.some((tag) =>
+          a.tags?.some((tag) =>
             tag.toLocaleLowerCase().includes(query as string),
           )
         )
@@ -42,7 +50,7 @@ const AllPosts = ({
         if (
           b.name.toLowerCase().includes(query.toLowerCase() as string) ||
           b.title.toLocaleLowerCase().includes(query as string) ||
-          b.tags.some((tag) =>
+          b.tags?.some((tag) =>
             tag.toLocaleLowerCase().includes(query as string),
           )
         )
@@ -67,22 +75,27 @@ const AllPosts = ({
     768: 2,
   };
 
-  return (
-    <div className="page-size mt-24 px-6">
-      <Masonry breakpointCols={breakPoints} className="flex gap-5">
-        {filteredPosts.map(({ id, title, image, name, avatar }) => (
-          <DarkCard
-            key={id}
-            id={`${id}`}
-            title={title}
-            image={image}
-            name={name}
-            avatar={avatar}
-          />
-        ))}
-      </Masonry>
-    </div>
-  );
+  if (users) {
+    return (
+      <div className="page-size mt-24 px-6">
+        <Masonry breakpointCols={breakPoints} className="flex gap-5">
+          {filteredPosts.map(({ id, title, image, name }, i) => (
+            <DarkCard
+              key={id}
+              id={`${id}`}
+              title={title}
+              image={image}
+              name={name}
+              avatar={users.find((user) => user.name === name)?.avatar!}
+              username={users.find((user) => user.name === name)?.username!}
+            />
+          ))}
+        </Masonry>
+      </div>
+    );
+  } else {
+    alert("loading data");
+  }
 };
 
 export default AllPosts;
