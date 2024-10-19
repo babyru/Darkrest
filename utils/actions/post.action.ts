@@ -105,6 +105,8 @@ export const updatePost = async (formData: FormData) => {
       .update(updatedData)
       .eq("id", id);
 
+      
+
     console.log({ data, error });
   } catch (error) {
     throw new Error("error updating post");
