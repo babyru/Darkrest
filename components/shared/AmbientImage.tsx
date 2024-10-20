@@ -12,7 +12,12 @@ const AmbientImage = async ({
   ambient: number;
   className?: string;
 }) => {
-  if (src.toLowerCase().endsWith("jpg" || "jpeg" || "png" || "gif")) {
+  if (
+    src.toLowerCase().endsWith("jpg") ||
+    src.toLowerCase().endsWith("jpeg") ||
+    src.toLowerCase().endsWith("png") ||
+    src.toLowerCase().endsWith("gif")
+  ) {
     const color = await Vibrant.from(src)
       .getPalette()
       .then((color) => {
