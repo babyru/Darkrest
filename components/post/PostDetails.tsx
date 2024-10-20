@@ -230,7 +230,7 @@ const PostDetails = ({
       const { data, error } = await supabaseClient
         .from("users")
         .select("*")
-        .eq("name", postDetail.name);
+        .eq("username", postDetail.username);
       if (data) {
         setPostUser(data[0]);
         setFollowers(data[0].followers?.length || 0);

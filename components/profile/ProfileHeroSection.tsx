@@ -28,6 +28,8 @@ const ProfileHeroSection = ({
   const [isBannerImageLoaded, setIsBannerImageLoaded] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
 
+  console.log(avatar);
+
   return (
     <section className={`relative mx-auto w-full max-w-4xl`}>
       <div
@@ -46,11 +48,11 @@ const ProfileHeroSection = ({
           />
         )}
         <div
-          className={`${banner ? "absolute -bottom-20 left-[50%] -translate-x-[50%]" : "mx-auto"} ${isUserImageLoaded ? "" : "bg-skeleton bg-myBackground"} max-h-40 min-h-40 min-w-40 max-w-40 overflow-hidden rounded-full border-2 border-myForeground`}
+          className={`${banner ? "absolute -bottom-20 left-[50%] -translate-x-[50%]" : "mx-auto"} ${isUserImageLoaded ? "" : "bg-skeleton bg-myBackground relative"} max-h-40 min-h-40 min-w-40 max-w-40 overflow-hidden rounded-full border-2 border-myForeground`}
         >
           {avatar && (
             <Image
-              src={avatar!}
+              src={avatar || "/icons/user-placeholder.svg"}
               alt="profile"
               width={500}
               height={500}

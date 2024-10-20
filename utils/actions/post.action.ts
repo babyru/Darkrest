@@ -36,6 +36,7 @@ export const createPost = async (formData: FormData) => {
     description,
     image: imageUrl,
     name,
+    username,
     downloadUrl: imageDownloadUrl,
     links: arrLinks,
     tags: arrTags,
@@ -79,7 +80,6 @@ export const updatePost = async (formData: FormData) => {
     tags,
     imageUrl,
     imageDownloadUrl,
-    name,
     id,
   } = Object.fromEntries(formData);
 
@@ -87,11 +87,9 @@ export const updatePost = async (formData: FormData) => {
   const arrTags = convertToArray(tags as string, true);
 
   const updatedData = {
-    id,
     title,
     description,
     image: imageUrl,
-    name,
     downloadUrl: imageDownloadUrl,
     links: arrLinks,
     tags: arrTags,
@@ -105,10 +103,22 @@ export const updatePost = async (formData: FormData) => {
       .update(updatedData)
       .eq("id", id);
 
-      
-
     console.log({ data, error });
   } catch (error) {
     throw new Error("error updating post");
+  }
+};
+
+export const deletePost = async (id: string) => {
+  try {
+    const { data, error } = await supabaseClient
+      .from("posts")
+      .delete()
+      .eq("id", id)
+      .select();
+
+    console.log({ data, error });
+  } catch (error) {
+    throw new Error("unable to delete post");
   }
 };

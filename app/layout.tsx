@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/home/Navbar";
-import { ToastProvider } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
+import Provider from "@/components/home/Provider";
 
 export const metadata: Metadata = {
   title: "Darkrest",
@@ -17,11 +17,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-myBackground">
-        <Navbar />
-        <main>{children}</main>
-        <Toaster />
-      </body>
+      <Provider>
+        <body className="bg-myBackground">
+          <Navbar />
+          <main>{children}</main>
+          <Toaster />
+        </body>
+      </Provider>
     </html>
   );
 }

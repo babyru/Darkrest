@@ -25,7 +25,7 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
   useEffect(() => {
     const fetchItems = async () => {
       const { data, error } = await supabaseClient.from("posts").select("*");
-      console.log("nav", { data, error });
+      // console.log("nav", { data, error });
       if (data) {
         setFetchedItems(data);
       } else {

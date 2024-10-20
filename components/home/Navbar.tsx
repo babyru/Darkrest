@@ -4,10 +4,10 @@ import { CustomCombobox } from "../shared/Combobox";
 import { Bell, LogIn, MessageCircleMore } from "lucide-react";
 import Image from "next/image";
 import MobileNav from "./MobileNav";
-import supabaseClient from "@/utils/supabase";
-
+import SignInBtn from "./navbar/SignInBtn";
+ 
 const Navbar = async () => {
-  const signedIn = true;
+  const signedIn = false;
 
   return (
     <header className="fixed top-0 z-10 h-16 w-screen bg-myBackground">
@@ -52,28 +52,7 @@ const Navbar = async () => {
           <MobileNav />
 
           {/* profile and sign in */}
-          {signedIn ? (
-            <Link
-              href={"/profile/noah_white"}
-              className="max-h-8 min-h-8 min-w-8 max-w-8 overflow-hidden rounded-full bg-button transition-all hover:bg-icon"
-            >
-              <Image
-                src={"/images/user (6).jpg"}
-                alt={"profile"}
-                width={200}
-                height={200}
-                className="object-cover"
-              />
-            </Link>
-          ) : (
-            <Link
-              href={"/sign-in"}
-              className="flex items-center gap-2 transition-all hover:bg-icon md:text-nowrap md:rounded-full md:bg-icon md:px-3 md:py-2"
-            >
-              <span className="hidden text-nowrap md:block">Sign In</span>
-              <LogIn className="-ml-1 h-7 w-7 text-icon md:-ml-0 md:hidden" />
-            </Link>
-          )}
+          <SignInBtn />
         </div>
       </nav>
     </header>

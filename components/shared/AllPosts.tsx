@@ -2,6 +2,7 @@
 
 import DarkCard from "@/components/shared/DarkCard";
 import supabaseClient from "@/utils/supabase";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import React, { useEffect, useState } from "react";
 import Masonry from "react-masonry-css";
 
@@ -17,11 +18,13 @@ const AllPosts = ({
   const [data, setData] = useState<PostProp[]>([]);
   const [filteredPosts, setFilteredPosts] = React.useState<PostProp[]>(data);
   const [users, setUsers] = useState<UserProp[]>([]);
+  const session = useSessionContext();
 
+  console.log("session", session);
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabaseClient.from("posts").select("*");
-      console.log("allPosts data", { data, error });
+      // console.log("allPosts data", { data, error });
       if (data) {
         setData(data);
       }
@@ -33,7 +36,7 @@ const AllPosts = ({
   useEffect(() => {
     const fetchUsers = async () => {
       const { data, error } = await supabaseClient.from("users").select("*");
-      console.log("allPosts users", { data, error });
+      // console.log("allPosts users", { data, error });
       if (data) {
         setUsers(data);
       } else {
@@ -72,7 +75,7 @@ const AllPosts = ({
       return Math.random() - 0.5;
     });
 
-    console.log("sortedPosts", sortedPosts);
+    // console.log("sortedPosts", sortedPosts);
     setFilteredPosts(sortedPosts);
   }, [query, data]);
 
@@ -83,7 +86,7 @@ const AllPosts = ({
     768: 2,
   };
 
-  console.log("filteredPosts", filteredPosts);
+  // console.log("filteredPosts", filteredPosts);
 
   return (
     <div className="page-size mt-24 px-6">

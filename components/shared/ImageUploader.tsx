@@ -20,7 +20,7 @@ const ImageUploader = ({
     <>
       <input
         type="file"
-        accept="image/*"
+        accept=".jpg, .jpeg, .png, .gif"
         id={label}
         className="hidden"
         onChange={handleImageUpload}

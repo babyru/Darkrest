@@ -15,7 +15,7 @@ const EditPostPage = async ({
     const { data: userDetails, error: userDetailsError } = await supabaseClient
       .from("users")
       .select("*")
-      .eq("name", post[0].name);
+      .eq("username", post[0].username);
 
     if (userDetails) {
       return (

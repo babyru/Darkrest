@@ -4,10 +4,6 @@ import PostDetails from "@/components/post/PostDetails";
 import supabaseClient from "@/utils/supabase";
 
 const page = async ({ params }: { params: { id: string } }) => {
-  const { data: allPosts, error: AllPostsError } = await supabaseClient
-    .from("posts")
-    .select("*");
-
   const { data: singlePost, error: singlePostError } = await supabaseClient
     .from("posts")
     .select("*")
@@ -19,7 +15,7 @@ const page = async ({ params }: { params: { id: string } }) => {
     const { data: username, error: usernameError } = await supabaseClient
       .from("users")
       .select("username")
-      .eq("name", singlePost[0].name);
+      .eq("username", singlePost[0].username);
 
     console.log("username", username);
     if (username) {

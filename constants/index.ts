@@ -9,16 +9,16 @@ export const navLinks = [
     name: "create",
     href: "/create",
   },
-  {
-    id: 3,
-    name: "notification",
-    href: "/notification",
-  },
-  {
-    id: 4,
-    name: "messages",
-    href: "/messages",
-  },
+  // {
+  //   id: 3,
+  //   name: "notification",
+  //   href: "/notification",
+  // },
+  // {
+  //   id: 4,
+  //   name: "messages",
+  //   href: "/messages",
+  // },
 ];
 
 const posts = [
