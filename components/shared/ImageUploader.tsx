@@ -6,6 +6,7 @@ interface ImageUploaderPops {
   handleImageUpload: (e: ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   label: string;
+  changePic?: boolean;
 }
 
 const ImageUploader = ({
@@ -13,6 +14,7 @@ const ImageUploader = ({
   handleImageUpload,
   className,
   label,
+  changePic,
 }: ImageUploaderPops) => {
   return (
     <>
@@ -22,6 +24,7 @@ const ImageUploader = ({
         id={label}
         className="hidden"
         onChange={handleImageUpload}
+        disabled={imageUrl && !changePic ? true : false}
       />
       <label
         htmlFor={label}
@@ -32,11 +35,13 @@ const ImageUploader = ({
             <img
               src={imageUrl}
               alt="image"
-              className="h-full w-full object-cover"
+              className={`h-full w-full object-cover ${!changePic && "cursor-default"}`}
             />
-            <div className="absolute bottom-0 left-0 flex h-full w-full items-center justify-center bg-icon/45 text-xl font-semibold text-white opacity-0 backdrop-blur-sm transition-all duration-300 hover:opacity-100">
-              Change Picture
-            </div>
+            {changePic && (
+              <div className="absolute bottom-0 left-0 flex h-full w-full items-center justify-center bg-icon/45 text-xl font-semibold text-white opacity-0 backdrop-blur-sm transition-all duration-300 hover:opacity-100">
+                Change Picture
+              </div>
+            )}
           </>
         )}
 

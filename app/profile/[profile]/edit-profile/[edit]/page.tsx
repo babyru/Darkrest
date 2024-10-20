@@ -111,7 +111,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
         fetchBlob();
       }
     };
-
+ 
     return (
       <div className="m-auto mt-24 flex w-screen max-w-4xl flex-col gap-20 px-6 text-myForeground md:flex-row md:gap-10">
         <div className="flex w-full flex-col items-start gap-10 font-semibold text-myForeground/45">
@@ -123,6 +123,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
               imageUrl={bannerUrl}
               handleImageUpload={handleBannerUpload}
               className="h-72 w-full max-w-4xl rounded-xl"
+              changePic={true}
             />
           </div>
 
@@ -134,6 +135,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
               imageUrl={avatarUrl}
               handleImageUpload={handleAvatarUpload}
               className="max-h-52 min-h-52 min-w-52 max-w-52 rounded-full"
+              changePic={true}
             />
           </div>
         </div>
