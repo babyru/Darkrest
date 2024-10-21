@@ -38,70 +38,6 @@ const signIn = () => {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: "google",
     });
-
-    if (data) {
-      if (session && session.user.user_metadata) {
-        // console.log(2, session?.user.user_metadata);
-
-        const newUserData = {
-          id: session.user.id,
-          name: session.user.user_metadata.name,
-          username: (session.user.user_metadata.name as string)
-            .toLowerCase()
-            .replaceAll(" ", "_"),
-          email: session.user.email,
-          avatar: session.user.user_metadata.avatar_url,
-        };
-
-        const { data: userData, error: userError } = await supabaseClient
-          .from("users")
-          .select("email")
-          .eq("email", newUserData.email);
-
-        if (userError) {
-          // console.error("Error checking user existence:", userError);
-          // throw new Error("Failed to check user existence");
-          return;
-        }
-
-        if (userData.length === 0) {
-          const { data: usernameData, error: usernameError } =
-            await supabaseClient
-              .from("users")
-              .select("username")
-              .eq("username", newUserData.username);
-
-          if (usernameError) {
-            // console.error("Error checking username existence:", usernameError);
-            // throw new Error("Failed to check username existence");
-            return;
-          }
-
-          const { data: insertData, error: insertError } = await supabaseClient
-            .from("users")
-            .insert({
-              ...newUserData,
-              username:
-                usernameData.length > 0
-                  ? newUserData.username +
-                    Math.floor(Math.random() * 10000)
-                      .toString()
-                      .padStart(4, "0")
-                  : newUserData.username,
-            });
-
-          // console.log("successfully created user in DB", {
-          //   insertData,
-          //   insertError,
-          // });
-        }
-        return;
-      }
-    } else {
-      // console.log({ error });
-      // throw new Error("error signing in");
-      return;
-    }
   }; // Ensure this closing brace is correct
 
   const handleEmailSignUp = async (email: string, password: string) => {
@@ -181,8 +117,7 @@ const signIn = () => {
   };
 
   const handleAction = async (formData: FormData) => {
-    const { name, username, email, password, confirmPassword } =
-      Object.fromEntries(formData);
+    const { username, email, password } = Object.fromEntries(formData);
     // isReadyToUpload && updateProfile(formData);
 
     const { data, error } = await supabaseClient
