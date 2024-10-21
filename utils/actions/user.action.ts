@@ -30,32 +30,39 @@ export const signUpAction = async (formData: FormData) => {
 };
 
 export const updateProfile = async (formData: FormData) => {
-  const { name, username, bio, avatarUrl, bannerUrl } =
+  const { name, username, bio, avatarUrl, bannerUrl, id } =
     Object.fromEntries(formData);
 
   const updatedProfile = {
-    name,
     username,
+    name,
     bio,
     avatar: avatarUrl,
     banner: bannerUrl,
   };
-  // console.log("updateProfile", updatedProfile);
+
+  console.log("updateProfile", updatedProfile);
   try {
     const { data, error } = await supabaseClient
       .from("users")
-      .update({
-        name,
-        username,
-        bio,
-        avatar: avatarUrl,
-        banner: bannerUrl,
-      })
-      .eq("username", username)
+      .update(updatedProfile)
+      .eq("id", id)
       .select();
 
-    // console.log("update profile", { data, error });
+    if (data) {
+      const { data: updatePosts, error: updatePostsError } =
+        await supabaseClient
+          .from("posts")
+          .update({ name, username })
+          .in("id", data[0].posts)
+          .select();
+
+      console.log("update profile", { data, error });
+      console.log("update posts", { updatePosts, updatePostsError });
+    }
   } catch (error) {
     // console.log({ error });
   }
 };
+
+
