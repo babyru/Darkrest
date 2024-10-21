@@ -42,7 +42,7 @@ export const createPost = async (formData: FormData) => {
     tags: arrTags,
   };
 
-  // console.log("createAction", newData);  
+  // console.log("createAction", newData);
 
   try {
     const { data: userData, error: userError } = await supabaseClient
@@ -74,15 +74,8 @@ export const createPost = async (formData: FormData) => {
 };
 
 export const updatePost = async (formData: FormData) => {
-  const {
-    title,
-    description,
-    links,
-    tags,
-    imageUrl,
-    imageDownloadUrl,
-    id,
-  } = Object.fromEntries(formData);
+  const { title, description, links, tags, imageUrl, imageDownloadUrl, id } =
+    Object.fromEntries(formData);
 
   const arrLinks = convertToArray(links as string);
   const arrTags = convertToArray(tags as string, true);
@@ -119,9 +112,8 @@ export const deletePost = async (id: string) => {
       .eq("id", id)
       .select();
 
-    // console.log({ data, error });
+    return data;
   } catch (error) {
-    // throw new Error("unable to delete post");
     return;
   }
 };
