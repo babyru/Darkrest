@@ -294,7 +294,9 @@ const PostDetails = ({
   // copies the url
   const handleCopy = () => {
     navigator.clipboard
-      .writeText(pathname)
+      .writeText(
+        `${typeof window !== "undefined" ? window.location.origin : ""}${pathname}`,
+      )
       .then(() => {
         setCopy(true);
       })
