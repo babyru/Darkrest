@@ -36,6 +36,10 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  useEffect(() => {
+    router.refresh();
+  }, [pathname]);
+
   // this fetches the current user details and updates the state
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -146,14 +150,14 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
         avatarUrl === userData[0].avatar &&
         bannerUrl === userData[0].banner
       ) {
-        router.push(`/profile/${userData[0].username}`);
+        router.push(`/profile/${username}`);
         console.log("opt 1");
         return;
       }
 
       if (username === edit) {
         updateProfile(formData);
-        router.push(`/profile/${userData[0].username}`);
+        router.push(`/profile/${username}`);
         toast({
           title: "Successfully updated profile",
           duration: 3000,
