@@ -121,7 +121,12 @@ const PostDetails = ({
   };
 
   const handleFollow = async () => {
-    updateData("following", isFollowed, username, setIsFollowed);
+    if (
+      currentUserDetails &&
+      currentUserDetails.username !== postUser?.username
+    ) {
+      updateData("following", isFollowed, username, setIsFollowed);
+    }
   };
 
   // handles the add and remove like
@@ -170,7 +175,10 @@ const PostDetails = ({
   const handleUpdateFollowing = async () => {
     let updatedFollowers: Array<string> = [];
 
-    if (currentUserDetails) {
+    if (
+      currentUserDetails &&
+      currentUserDetails.username !== postUser?.username
+    ) {
       const { data, error } = await supabaseClient
         .from("users")
         .select("followers")

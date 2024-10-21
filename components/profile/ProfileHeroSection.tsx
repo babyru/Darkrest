@@ -60,7 +60,7 @@ const ProfileHeroSection = ({
   }, [username, currentUser]);
 
   const handleFollow = async () => {
-    if (!currentUserDetails) return;
+    if (!currentUserDetails || username === currentUser) return;
 
     if (isFollowed) {
       // console.log("un-followed");
