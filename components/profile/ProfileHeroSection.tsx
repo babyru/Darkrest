@@ -1,12 +1,14 @@
 "use client";
 
+import supabaseClient from "@/utils/supabase";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { PencilIcon, UserCheck, UserRoundCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const ProfileHeroSection = ({
-  user,
+  currentUser,
   avatar,
   banner = "",
   name,
@@ -15,7 +17,7 @@ const ProfileHeroSection = ({
   followers,
   following,
 }: {
-  user: string;
+  currentUser: string;
   avatar: string;
   banner: string;
   name: string;
@@ -27,8 +29,65 @@ const ProfileHeroSection = ({
   const [isUserImageLoaded, setIsUserImageLoaded] = useState(false);
   const [isBannerImageLoaded, setIsBannerImageLoaded] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
+  const [currentUserDetails, setCurrentUserDetails] = useState<UserProp>();
+  const { session } = useSessionContext();
 
-  console.log(avatar);
+  // fetch current user details
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const { data, error } = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("username", currentUser);
+
+      if (error) {
+        // console.log("error fetching current user", error);
+        // throw new Error("error fetching current user");
+        return;
+      }
+
+      if (data && data.length > 0) {
+        // console.log(data[0]);
+        setCurrentUserDetails(data[0]);
+        if (data[0].following?.includes(username)) {
+          // console.log("he is followed in supabase so updated to true");
+          setIsFollowed(true);
+        }
+      }
+    };
+
+    fetchCurrentUser();
+  }, [username, currentUser]);
+
+  const handleFollow = async () => {
+    if (!currentUserDetails) return;
+
+    if (isFollowed) {
+      // console.log("un-followed");
+      const { data, error } = await supabaseClient
+        .from("users")
+        .update({
+          following: currentUserDetails.following.filter(
+            (user) => user !== username,
+          ),
+        })
+        .eq("username", currentUser)
+        .select();
+
+      // console.log({ data, error });
+    } else {
+      //  console.log("following");
+      const { data, error } = await supabaseClient
+        .from("users")
+        .update({
+          following: [...currentUserDetails.following, username],
+        })
+        .eq("username", currentUser)
+        .select();
+
+      // console.log({ data, error });
+    }
+  };
 
   return (
     <section className={`relative mx-auto w-full max-w-4xl`}>
@@ -48,7 +107,7 @@ const ProfileHeroSection = ({
           />
         )}
         <div
-          className={`${banner ? "absolute -bottom-20 left-[50%] -translate-x-[50%]" : "mx-auto"} ${isUserImageLoaded ? "" : "bg-skeleton bg-myBackground relative"} max-h-40 min-h-40 min-w-40 max-w-40 overflow-hidden rounded-full border-2 border-myForeground`}
+          className={`${banner ? "absolute -bottom-20 left-[50%] -translate-x-[50%]" : "mx-auto"} ${isUserImageLoaded ? "" : "bg-skeleton relative bg-myBackground"} max-h-40 min-h-40 min-w-40 max-w-40 overflow-hidden rounded-full border-2 border-myForeground`}
         >
           {avatar && (
             <Image
@@ -70,20 +129,30 @@ const ProfileHeroSection = ({
       >
         <div className="relative">
           <h1 className="text-2xl font-bold">{name}</h1>
-          {username === user ? (
+          {username === currentUser ? (
             <Link
-              href={`/profile/${user}/edit-profile/${user}`}
+              href={`/profile/${currentUser}/edit-profile/${currentUser}`}
               className={`secondary-btn mx-auto flex w-fit items-center justify-center gap-2 text-sm hover:bg-icon sm:absolute sm:-right-[130px] sm:top-0`}
             >
               Edit Profile <PencilIcon className="h-4 w-4" />
             </Link>
-          ) : (
+          ) : session ? (
             <button
               className={`secondary-btn mx-auto mt-3 flex w-fit items-center justify-center gap-2 text-sm hover:bg-icon sm:absolute sm:top-0 sm:mt-0 ${isFollowed ? "bg-icon sm:-right-24" : "bg-button hover:bg-icon sm:-right-20"}`}
-              onClick={() => setIsFollowed((prevValue) => !prevValue)}
+              onClick={() => {
+                setIsFollowed((prevValue) => !prevValue);
+                handleFollow();
+              }}
             >
               {isFollowed ? "Following" : "Follow"}
             </button>
+          ) : (
+            <Link
+              href={"/sign-in"}
+              className={`secondary-btn mx-auto mt-3 flex w-fit items-center justify-center gap-2 text-sm hover:bg-icon sm:absolute sm:top-0 sm:mt-0 ${isFollowed ? "bg-icon sm:-right-24" : "bg-button hover:bg-icon sm:-right-20"}`}
+            >
+              Follow
+            </Link>
           )}
         </div>
 

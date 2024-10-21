@@ -35,7 +35,8 @@ const SignInBtn = () => {
   const handleSignOut = async () => {
     const { error } = await supabaseClient.auth.signOut();
     if (error) {
-      throw new Error("unble to sign out");
+      // throw new Error("unble to sign out");
+      return;
     }
     setIsOpen(false);
   };
@@ -49,7 +50,8 @@ const SignInBtn = () => {
           .eq("id", session?.user.id);
 
         if (error) {
-          throw new Error("unable to fetch avatar");
+          // throw new Error("unable to fetch avatar");
+          return;
         }
 
         setAvatarUrl(data[0]?.avatar || null);

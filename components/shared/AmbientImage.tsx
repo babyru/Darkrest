@@ -27,7 +27,7 @@ const AmbientImage = async ({
         }
       });
 
-    console.log(src);
+    // console.log(src);
 
     return (
       <Image

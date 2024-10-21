@@ -46,7 +46,7 @@ const EditableCard = ({
                   );
 
                   if (deleteConfirmation) {
-                    console.log("wanna delete");
+                    // console.log("wanna delete");
                     deletePost(id);
                     if (typeof window !== undefined) {
                       window.location.reload();

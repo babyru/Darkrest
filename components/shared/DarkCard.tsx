@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import AvatarWithLoader from "./AvatarWithLoader";
+import DarkCardImage from "./darkcard image/DarkCardImage";
 
 const DarkCard = ({
   id,
@@ -20,17 +21,7 @@ const DarkCard = ({
 }) => {
   return (
     <div className="mb-5 transition-all duration-300 hover:scale-[1.02]">
-      <div className="h-fit w-full overflow-hidden rounded-xl bg-button">
-        <Link href={`/post/${id}`}>
-          <Image
-            src={image}
-            alt={title}
-            width={1000}
-            height={1000}
-            className="size-full"
-          />
-        </Link>
-      </div>
+      <DarkCardImage id={id} image={image} title={title} />
       <h1 className="mb-2 mt-4 text-lg font-semibold text-myForeground">
         {title}
       </h1>

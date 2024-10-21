@@ -10,7 +10,7 @@ const EditPostPage = async ({
     .select("*")
     .eq("id", edit);
 
-  console.log(post);
+  // console.log(post);
   if (post) {
     const { data: userDetails, error: userDetailsError } = await supabaseClient
       .from("users")
@@ -38,7 +38,7 @@ const EditPostPage = async ({
       );
     }
   } else {
-    alert("error fetching posts in edit post");
+    // alert("error fetching posts in edit post");
   }
 };
 

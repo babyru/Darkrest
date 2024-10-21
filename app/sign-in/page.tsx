@@ -17,7 +17,7 @@ interface InputValuesProps {
 }
 
 const signIn = () => {
-   const [inputValues, setInputValues] = useState<InputValuesProps>({
+  const [inputValues, setInputValues] = useState<InputValuesProps>({
     name: "",
     username: "",
     email: "",
@@ -41,7 +41,7 @@ const signIn = () => {
 
     if (data) {
       if (session && session.user.user_metadata) {
-        console.log(2, session?.user.user_metadata);
+        // console.log(2, session?.user.user_metadata);
 
         const newUserData = {
           id: session.user.id,
@@ -59,8 +59,9 @@ const signIn = () => {
           .eq("email", newUserData.email);
 
         if (userError) {
-          console.error("Error checking user existence:", userError);
-          throw new Error("Failed to check user existence");
+          // console.error("Error checking user existence:", userError);
+          // throw new Error("Failed to check user existence");
+          return;
         }
 
         if (userData.length === 0) {
@@ -71,8 +72,9 @@ const signIn = () => {
               .eq("username", newUserData.username);
 
           if (usernameError) {
-            console.error("Error checking username existence:", usernameError);
-            throw new Error("Failed to check username existence");
+            // console.error("Error checking username existence:", usernameError);
+            // throw new Error("Failed to check username existence");
+            return;
           }
 
           const { data: insertData, error: insertError } = await supabaseClient
@@ -88,16 +90,17 @@ const signIn = () => {
                   : newUserData.username,
             });
 
-          console.log("successfully created user in DB", {
-            insertData,
-            insertError,
-          });
+          // console.log("successfully created user in DB", {
+          //   insertData,
+          //   insertError,
+          // });
         }
         return;
       }
     } else {
-      console.log({ error });
-      throw new Error("error signing in");
+      // console.log({ error });
+      // throw new Error("error signing in");
+      return;
     }
   }; // Ensure this closing brace is correct
 
@@ -108,18 +111,9 @@ const signIn = () => {
     });
 
     if (error) {
-      console.log({ error });
+      // console.log({ error });
       setOtherErrors(error.message);
-    } else {
-      // Check if the user needs to confirm their email
-      if (data.user) {
-        console.log(
-          "Sign-up successful, please check your email for confirmation.",
-        );
-        // Optionally, you can redirect the user or show a success message
-      } else {
-        console.log("Sign-up initiated, but no user data returned.");
-      }
+      return;
     }
 
     // try {
@@ -191,16 +185,14 @@ const signIn = () => {
       Object.fromEntries(formData);
     // isReadyToUpload && updateProfile(formData);
 
-    const userData = { name, username, email, password };
-
     const { data, error } = await supabaseClient
       .from("users")
       .select("username")
       .eq("username", username);
-    console.log(data, error);
+    // console.log(data, error);
 
     if (error) {
-      console.log("error checking username existence");
+      // console.log("error checking username existence");
       return;
     }
 

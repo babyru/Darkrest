@@ -9,7 +9,7 @@ const page = async ({ params }: { params: { id: string } }) => {
     .select("*")
     .eq("id", params.id);
 
-  console.log(singlePost);
+  // console.log({ singlePost });
 
   if (singlePost) {
     const { data: username, error: usernameError } = await supabaseClient
@@ -17,11 +17,11 @@ const page = async ({ params }: { params: { id: string } }) => {
       .select("username")
       .eq("username", singlePost[0].username);
 
-    console.log("username", username);
+    // console.log("username", username, usernameError);
     if (username) {
       return (
         <div className="page-size mt-24 px-6 text-myForeground">
-          <section className="m-auto flex h-fit w-full max-w-4xl flex-col items-start justify-center gap-10 rounded-xl bg-button/25 p-5 md:flex-row">
+          <section className="m-auto flex h-fit min-h-96 w-full max-w-4xl flex-col items-start justify-center gap-10 rounded-xl bg-button/25 p-5 md:flex-row">
             <div className="w-full rounded-xl">
               {singlePost[0]?.image ? (
                 <AmbientImage
@@ -44,7 +44,7 @@ const page = async ({ params }: { params: { id: string } }) => {
       );
     }
   } else {
-    alert("loading data");
+    // alert("loading data");
   }
 };
 

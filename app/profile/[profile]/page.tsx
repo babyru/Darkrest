@@ -102,7 +102,7 @@ const Profile = ({
           bio={userData.bio}
           followers={userData.followers}
           following={userData.following}
-          user={user}
+          currentUser={user}
         />
 
         <nav className="mt-10 flex items-center justify-center gap-2 text-myForeground">

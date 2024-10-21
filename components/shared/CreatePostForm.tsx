@@ -258,10 +258,12 @@ const CreatePostForm = ({
             if (createOrUpdate === "create") {
               toast({
                 title: "Post created successfully",
+                duration: 3000,
               });
             } else {
               toast({
                 title: "Post updated successfully",
+                duration: 3000,
               });
             }
           }}

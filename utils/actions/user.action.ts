@@ -21,11 +21,12 @@ export const signUpAction = async (formData: FormData) => {
   });
 
   if (error) {
-    console.log({ error });
-    throw new Error("signUpAction error");
+    // console.log({ error });
+    // throw new Error("signUpAction error");
+    return;
   }
 
-  console.log("signUpAction", { data });
+  // console.log("signUpAction", { data });
 };
 
 export const updateProfile = async (formData: FormData) => {
@@ -39,7 +40,7 @@ export const updateProfile = async (formData: FormData) => {
     avatar: avatarUrl,
     banner: bannerUrl,
   };
-  console.log("updateProfile", updatedProfile);
+  // console.log("updateProfile", updatedProfile);
   try {
     const { data, error } = await supabaseClient
       .from("users")
@@ -53,8 +54,8 @@ export const updateProfile = async (formData: FormData) => {
       .eq("username", username)
       .select();
 
-    console.log("update profile", { data, error });
+    // console.log("update profile", { data, error });
   } catch (error) {
-    console.log({ error });
+    // console.log({ error });
   }
 };

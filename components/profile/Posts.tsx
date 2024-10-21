@@ -28,11 +28,12 @@ const Posts = ({
     const fetchUserData = async () => {
       const { data, error } = await supabaseClient.from("users").select("*");
       if (data) {
-        console.log("got data");
+        // console.log("got data");
         setUserData(data);
       } else {
-        alert("error fetching users in Posts");
-        console.log(error);
+        // alert("error fetching users in Posts");
+        // console.log(error);
+        return
       }
     };
 

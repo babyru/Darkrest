@@ -42,7 +42,7 @@ export const createPost = async (formData: FormData) => {
     tags: arrTags,
   };
 
-  console.log("createAction", newData);
+  // console.log("createAction", newData);  
 
   try {
     const { data: userData, error: userError } = await supabaseClient
@@ -56,7 +56,7 @@ export const createPost = async (formData: FormData) => {
         .insert(newData)
         .select();
 
-      console.log({ userData, userError });
+      // console.log({ userData, userError });
 
       const { data: updateUser, error: updateUserError } = await supabaseClient
         .from("users")
@@ -64,11 +64,12 @@ export const createPost = async (formData: FormData) => {
         .eq("username", username)
         .select();
 
-      console.log({ postData, postError });
-      console.log({ updateUser, updateUserError });
+      // console.log({ postData, postError });
+      // console.log({ updateUser, updateUserError });
     }
   } catch (error) {
-    throw new Error("error creating post");
+    // throw new Error("error creating post");
+    return;
   }
 };
 
@@ -95,7 +96,7 @@ export const updatePost = async (formData: FormData) => {
     tags: arrTags,
   };
 
-  console.log("updateAction", updatedData);
+  // console.log("updateAction", updatedData);
 
   try {
     const { data, error } = await supabaseClient
@@ -103,9 +104,10 @@ export const updatePost = async (formData: FormData) => {
       .update(updatedData)
       .eq("id", id);
 
-    console.log({ data, error });
+    // console.log({ data, error });
   } catch (error) {
-    throw new Error("error updating post");
+    // throw new Error("error updating post");
+    return;
   }
 };
 
@@ -117,8 +119,9 @@ export const deletePost = async (id: string) => {
       .eq("id", id)
       .select();
 
-    console.log({ data, error });
+    // console.log({ data, error });
   } catch (error) {
-    throw new Error("unable to delete post");
+    // throw new Error("unable to delete post");
+    return;
   }
 };

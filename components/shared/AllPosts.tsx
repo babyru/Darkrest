@@ -2,36 +2,67 @@
 
 import DarkCard from "@/components/shared/DarkCard";
 import supabaseClient from "@/utils/supabase";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import Masonry from "react-masonry-css";
 
-const AllPosts = ({
-  query = "",
-  filterBy = "name",
-  user = "",
-}: {
-  query?: string;
-  filterBy?: "name" | "id";
-  user?: string;
-}) => {
+const AllPosts = ({ query = "" }: { query?: string }) => {
   const [data, setData] = useState<PostProp[]>([]);
   const [filteredPosts, setFilteredPosts] = React.useState<PostProp[]>(data);
   const [users, setUsers] = useState<UserProp[]>([]);
-  const session = useSessionContext();
-
-  console.log("session", session);
+  const [isLoading, setIsLoading] = useState(false);
+  const [incLimit, setIncLimit] = useState(false);
+  const [limit, setLimit] = useState(20);
+  const { inView, ref } = useInView();
+  const router = useRouter();
+  const pathname = usePathname();
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabaseClient.from("posts").select("*");
-      // console.log("allPosts data", { data, error });
+
+      if (error) {
+        return;
+      }
+
+      console.log(data.length, limit);
+
+      if (data.length < limit) {
+        console.log("first");
+        setIsLoading(false);
+        setIncLimit(false);
+      } else {
+        setIsLoading(true);
+        setIncLimit(true);
+      }
+    };
+
+    fetchData();
+  }, [inView, pathname]);
+
+  useEffect(() => {
+    if (inView && incLimit) {
+      router.push(`?limit=${limit}`, { scroll: false });
+      setLimit((prevValue) => prevValue + 20);
+    }
+  }, [inView, pathname]);
+
+  // console.log("session", session);
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabaseClient
+        .from("posts")
+        .select("*")
+        .limit(limit);
+      console.log("allPosts data", { data, error });
       if (data) {
         setData(data);
       }
     };
 
     fetchData();
-  }, []);
+  }, [limit]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -41,7 +72,7 @@ const AllPosts = ({
         setUsers(data);
       } else {
         // alert(`error fetching users allPost`);
-        console.log(error);
+        // console.log(error);
       }
     };
 
@@ -89,7 +120,7 @@ const AllPosts = ({
   // console.log("filteredPosts", filteredPosts);
 
   return (
-    <div className="page-size mt-24 px-6">
+    <div className="page-size relative pb-20 mt-24 px-6">
       <Masonry breakpointCols={breakPoints} className="flex gap-5">
         {filteredPosts?.map(({ id, title, image, name }, i) => (
           <DarkCard
@@ -103,6 +134,20 @@ const AllPosts = ({
           />
         ))}
       </Masonry>
+      {isLoading && (
+        <div
+          className="absolute bottom-0 left-[50%] -translate-x-[50%]"
+          ref={ref}
+        >
+          <Image
+            src={"/icons/loader.gif"}
+            alt="loader"
+            width={100}
+            height={100}
+            className="my-5 size-12"
+          />
+        </div>
+      )}
     </div>
   );
 };

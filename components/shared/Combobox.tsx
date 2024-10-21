@@ -1,16 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import {
   Combobox,
   ComboboxInput,
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { SearchIcon } from "lucide-react";
 import supabaseClient from "@/utils/supabase";
+import Image from "next/image";
 
 interface ItemsProp {
   items?: PostProp[];
@@ -25,11 +26,8 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
   useEffect(() => {
     const fetchItems = async () => {
       const { data, error } = await supabaseClient.from("posts").select("*");
-      // console.log("nav", { data, error });
       if (data) {
         setFetchedItems(data);
-      } else {
-        console.log("error", error);
       }
     };
     fetchItems();
@@ -44,26 +42,6 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
       : fetchedItems.filter((item) =>
           item.title.toLowerCase().includes(query.toLowerCase()),
         );
-
-  // const [options, setOptions] = useState<string[]>([]);
-  // useEffect(() => {
-  //   if (query === "") {
-  //     items.forEach(({ title, tags }) => {
-  //       setOptions((prevValue) => [...prevValue, title, ...tags]);
-  //     });
-  //   } else {
-  //     items.filter(({ title, tags }) => {
-  //       if (
-  //         title.toLowerCase().includes(query.toLowerCase()) ||
-  //         tags.some((tag) =>
-  //           tag.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-  //         )
-  //       ) {
-  //         setOptions((prevValue) => [...prevValue, title, ...tags]);
-  //       }
-  //     });
-  //   }
-  // }, [query]);
 
   const debouncedPush = useCallback(
     debounce((path: string) => {
