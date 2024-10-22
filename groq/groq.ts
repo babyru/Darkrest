@@ -1,0 +1,40 @@
+const Groq = require("groq-sdk");
+
+const groq = new Groq({
+  apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY,
+  dangerouslyAllowBrowser: true,
+});
+
+export async function fetchGroq(imageData: string) {
+  const chatCompletion = await groq.chat.completions.create({
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "give three tags for this image, don't give description or anything extra ",
+          },
+          {
+            type: "image_url",
+            image_url: {
+              url: imageData,
+            },
+          },
+        ],
+      },
+      {
+        role: "assistant",
+        content: "",
+      },
+    ],
+    model: "llama-3.2-11b-vision-preview",
+    temperature: 1,
+    max_tokens: 1024,
+    top_p: 1,
+    stream: false,
+    stop: null,
+  });
+
+  console.log(chatCompletion.choices[0].message.content);
+}
