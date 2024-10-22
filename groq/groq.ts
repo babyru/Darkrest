@@ -1,11 +1,11 @@
-const Groq = require("groq-sdk");
+import Groq from "groq-sdk";
 
 const groq = new Groq({
   apiKey: process.env.NEXT_PUBLIC_GROQ_API_KEY,
   dangerouslyAllowBrowser: true,
 });
 
-export async function fetchGroq(imageData: string) {
+export async function aiTagging(imageData: string) {
   const chatCompletion = await groq.chat.completions.create({
     messages: [
       {
@@ -13,7 +13,7 @@ export async function fetchGroq(imageData: string) {
         content: [
           {
             type: "text",
-            text: "give three tags for this image, don't give description or anything extra ",
+            text: "give three tags in an array without any hashtags or numbers for this image and never use the word myth. if any thing hindu just tell hindu, don't give description or anything extra ",
           },
           {
             type: "image_url",
@@ -36,5 +36,6 @@ export async function fetchGroq(imageData: string) {
     stop: null,
   });
 
-  console.log(chatCompletion.choices[0].message.content);
+  // console.log(chatCompletion.choices[0].message.content);
+  return chatCompletion.choices[0].message.content;
 }

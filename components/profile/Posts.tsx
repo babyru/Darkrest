@@ -17,7 +17,6 @@ const Posts = ({
   user = "",
   searchParams,
 }: {
-  query: string;
   posts: PostProp[];
   user: string;
   searchParams: string | undefined;
@@ -33,7 +32,7 @@ const Posts = ({
       } else {
         // alert("error fetching users in Posts");
         // console.log(error);
-        return
+        return;
       }
     };
 

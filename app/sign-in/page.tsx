@@ -54,7 +54,7 @@ const signIn = () => {
 
     // try {
     //   if (data && session && session.user.user_metadata) {
-    //     console.log(session?.user.user_metadata);
+    //     // console.log(session?.user.user_metadata);
 
     //     const newUserData = {
     //       id: session.user.id,
@@ -101,14 +101,14 @@ const signIn = () => {
     //               : newUserData.username,
     //         });
 
-    //       console.log("successfully created user in DB", {
+    //       // console.log("successfully created user in DB", {
     //         insertData,
     //         insertError,
     //       });
     //     }
     //     return;
     //   } else {
-    //     console.log({ error });
+    //     // console.log({ error });
     //     throw new Error("error signing in");
     //   }
     // } catch (error) {

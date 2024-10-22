@@ -41,7 +41,7 @@ export const updateProfile = async (formData: FormData) => {
     banner: bannerUrl,
   };
 
-  console.log("updateProfile", updatedProfile);
+  // console.log("updateProfile", updatedProfile);
   try {
     const { data, error } = await supabaseClient
       .from("users")
@@ -57,12 +57,10 @@ export const updateProfile = async (formData: FormData) => {
           .in("id", data[0].posts)
           .select();
 
-      console.log("update profile", { data, error });
-      console.log("update posts", { updatePosts, updatePostsError });
+      // console.log("update profile", { data, error });
+      // console.log("update posts", { updatePosts, updatePostsError });
     }
   } catch (error) {
     // console.log({ error });
   }
 };
-
-

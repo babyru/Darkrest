@@ -27,10 +27,10 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
         return;
       }
 
-      console.log(data.length, limit);
+      // console.log(data.length, limit);
 
       if (data.length < limit) {
-        console.log("first");
+        // console.log("first");
         setIsLoading(false);
         setIncLimit(false);
       } else {
@@ -56,7 +56,7 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
         .from("posts")
         .select("*")
         .limit(limit);
-      console.log("allPosts data", { data, error });
+      // console.log("allPosts data", { data, error });
       if (data) {
         setData(data);
       }
@@ -65,7 +65,7 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
     fetchData();
   }, [limit]);
 
-  console.log("second");
+  // console.log("second");
 
   useEffect(() => {
     const fetchPostsByQuery = async (query: string) => {
@@ -74,10 +74,10 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
           .from("posts")
           .select("*")
           .ilike("name", query)
-          .ilike("description", query)
-          // .contains("tags", [query]); // Wrap query in an array
+          .ilike("description", query);
+        // .contains("tags", [query]); // Wrap query in an array
 
-        console.log(123, { data, error });
+        // console.log(123, { data, error });
 
         if (error) {
           console.error("Error fetching posts:", error);

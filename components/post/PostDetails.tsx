@@ -53,7 +53,7 @@ const PostDetails = ({
 
         setCurrentUserDetails(data[0]);
         if (data[0].saved?.includes(postDetail.id)) {
-          console.log("it is saved in supabase so updated to true");
+          // console.log("it is saved in supabase so updated to true");
           setIsSaved(true);
         }
 
@@ -88,7 +88,7 @@ const PostDetails = ({
     let savedUpdate: Array<string> = [];
 
     if (shouldSave) {
-      console.log(`added to ${toBeUpdated}`);
+      // console.log(`added to ${toBeUpdated}`);
       savedUpdate = [
         ...(currentUserDetails[toBeUpdated]?.filter((post) => post !== value) ||
           []),
@@ -96,7 +96,7 @@ const PostDetails = ({
       ];
       setData(true);
     } else {
-      console.log(`removed from ${toBeUpdated}`);
+      // console.log(`removed from ${toBeUpdated}`);
       savedUpdate = [
         ...currentUserDetails[toBeUpdated].filter((post) => post !== value),
       ];
@@ -110,7 +110,7 @@ const PostDetails = ({
         .eq("username", currentUserDetails.username)
         .select();
 
-      console.log("updateData", { data, error });
+      // console.log("updateData", { data, error });
     } catch (error) {
       // console.log([error]);
     }
