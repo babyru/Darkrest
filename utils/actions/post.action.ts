@@ -106,20 +106,21 @@ export const updatePost = async (formData: FormData) => {
     tags: arrTags,
   };
 
-  // console.log("updateAction", updatedData);
+  console.log("updateAction", updatedData);
 
   try {
     const { data, error } = await supabaseClient
       .from("posts")
       .update(updatedData)
-      .eq("id", id);
+      .eq("id", id)
+      .select();
 
-    // console.log({ data, error });
+    console.log({ data, error });
   } catch (error) {
     throw new Error("error updating post");
     return;
   }
- };
+};
 
 export const deletePost = async (id: string) => {
   try {
