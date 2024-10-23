@@ -20,7 +20,7 @@ const SignInBtn = () => {
     const fetchUser = async () => {
       if (session) {
         if (session.user.user_metadata) {
-          console.log(2, session?.user.id);
+          // console.log(2, session?.user.id);
 
           const newUserData = {
             id: session.user.id,
@@ -80,10 +80,10 @@ const SignInBtn = () => {
                 : newUserData.username,
             );
 
-            console.log("successfully created user in DB", {
-              insertData,
-              insertError,
-            });
+            // console.log("successfully created user in DB", {
+            //   insertData,
+            //   insertError,
+            // });
           }
           return;
         }
@@ -95,15 +95,15 @@ const SignInBtn = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      console.log("first");
+      // console.log("first");
       if (session && session.user.id) {
-        console.log("second");
+        // console.log("second");
         const { data: user, error: userError } = await supabaseClient
           .from("users")
           .select("username")
           .eq("id", session?.user.id);
 
-        console.log({ user, userError });
+        // console.log({ user, userError });
         if (userError) {
           console.error(userError);
           return;

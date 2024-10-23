@@ -151,7 +151,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
         bannerUrl === userData[0].banner
       ) {
         router.push(`/profile/${username}`);
-        console.log("opt 1");
+        // console.log("opt 1");
         return;
       }
 
@@ -162,7 +162,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
           title: "Successfully updated profile",
           duration: 3000,
         });
-        console.log("opt 2");
+        // console.log("opt 2");
         return;
       }
 
@@ -170,7 +170,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
         setUsernameError("Username already taken");
         setIsUsernameAvailable(false);
       } else {
-        console.log("opt 3");
+        // console.log("opt 3");
         setUsernameError("");
         setIsUsernameAvailable(true);
         updateProfile(formData);

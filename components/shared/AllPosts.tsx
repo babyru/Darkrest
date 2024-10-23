@@ -18,6 +18,7 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
   const { inView, ref } = useInView();
   const router = useRouter();
   const pathname = usePathname();
+
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabaseClient.from("posts").select("*");
@@ -26,10 +27,10 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
         return;
       }
 
-      console.log(data.length, limit);
+      // console.log(data.length, limit);
 
       if (data.length < limit) {
-        console.log("first");
+        // console.log("first");
         setIsLoading(false);
         setIncLimit(false);
       } else {
@@ -55,7 +56,7 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
         .from("posts")
         .select("*")
         .limit(limit);
-      console.log("allPosts data", { data, error });
+      // console.log("allPosts data", { data, error });
       if (data) {
         setData(data);
       }
@@ -63,6 +64,32 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
 
     fetchData();
   }, [limit]);
+
+  // console.log("second");
+
+  useEffect(() => {
+    const fetchPostsByQuery = async (query: string) => {
+      if (query) {
+        const { data, error } = await supabaseClient
+          .from("posts")
+          .select("*")
+          .ilike("name", query)
+          .ilike("description", query);
+        // .contains("tags", [query]); // Wrap query in an array
+
+        // console.log(123, { data, error });
+
+        if (error) {
+          console.error("Error fetching posts:", error);
+          return [];
+        }
+
+        return data;
+      }
+    };
+
+    // fetchPostsByQuery(query);
+  }, [query]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -120,7 +147,7 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
   // console.log("filteredPosts", filteredPosts);
 
   return (
-    <div className="page-size relative pb-20 mt-24 px-6">
+    <div className="page-size relative mt-24 px-6 pb-20">
       <Masonry breakpointCols={breakPoints} className="flex gap-5">
         {filteredPosts?.map(({ id, title, image, name }, i) => (
           <DarkCard

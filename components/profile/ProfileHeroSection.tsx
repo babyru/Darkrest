@@ -76,7 +76,7 @@ const ProfileHeroSection = ({
 
       // console.log({ data, error });
     } else {
-      //  console.log("following");
+      //  // console.log("following");
       const { data, error } = await supabaseClient
         .from("users")
         .update({

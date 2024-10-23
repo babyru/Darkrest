@@ -121,20 +121,10 @@ const Profile = ({
         </nav>
 
         {page === "posts" || page === undefined ? (
-          <Posts
-            query={userData.name}
-            posts={createdPosts || []}
-            searchParams={page}
-            user={user}
-          />
+          <Posts posts={createdPosts || []} searchParams={page} user={user} />
         ) : savedPost?.length !== 0 && savedPost !== null ? (
           <>
-            <Posts
-              query={userData.name}
-              posts={savedPost || []}
-              user={user}
-              searchParams={page}
-            />
+            <Posts posts={savedPost || []} user={user} searchParams={page} />
           </>
         ) : (
           <div className="my-10 text-center text-lg font-semibold text-myForeground">
