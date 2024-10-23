@@ -3,7 +3,7 @@ import AmbientImage from "@/components/shared/AmbientImage";
 import PostDetails from "@/components/post/PostDetails";
 import supabaseClient from "@/utils/supabase";
 
-const page = async ({ params }: { params: { id: string } }) => {
+const PostPage = async ({ params }: { params: { id: string } }) => {
   const { data: singlePost, error: singlePostError } = await supabaseClient
     .from("posts")
     .select("*")
@@ -48,4 +48,4 @@ const page = async ({ params }: { params: { id: string } }) => {
   }
 };
 
-export default page;
+export default PostPage;

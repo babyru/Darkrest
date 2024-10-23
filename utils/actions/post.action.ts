@@ -59,7 +59,7 @@ export const createPost = async (formData: FormData) => {
     // console.log(tagsArr);
   }
 
-  console.log(newData);
+  // console.log(newData);
 
   try {
     const { data: userData, error: userError } = await supabaseClient
@@ -116,10 +116,10 @@ export const updatePost = async (formData: FormData) => {
 
     // console.log({ data, error });
   } catch (error) {
-    // throw new Error("error updating post");
+    throw new Error("error updating post");
     return;
   }
-};
+ };
 
 export const deletePost = async (id: string) => {
   try {

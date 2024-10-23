@@ -49,6 +49,23 @@ const CreatePostForm = ({
   });
   const { toast } = useToast();
 
+  // console.log(2, {
+  //   idProp,
+  //   imageUrlProp,
+  //   imageDownloadUrlProp,
+  //   titleProp,
+  //   descriptionProp,
+  //   linksProp,
+  //   tagsProp,
+  //   createOrUpdate,
+  //   isReadyToSubmit,
+  //   username,
+  //   name,
+  // });
+
+
+  // console.log(createOrUpdate)
+  
   const router = useRouter();
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -103,6 +120,7 @@ const CreatePostForm = ({
             setImageDownloadUrl(null);
             setIsReadyToUpload(false);
           } else {
+            // console.log('update post now')
             updatePost(formData);
           }
         }}

@@ -301,7 +301,8 @@ const PostDetails = ({
         setCopy(true);
       })
       .catch((err) => {
-        console.error("Failed to copy pathname to clipboard: ", err);
+        // console.error("Failed to copy pathname to clipboard: ", err);
+        return;
       });
   };
 

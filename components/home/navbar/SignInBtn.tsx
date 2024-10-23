@@ -105,7 +105,7 @@ const SignInBtn = () => {
 
         // console.log({ user, userError });
         if (userError) {
-          console.error(userError);
+          // console.error(userError);
           return;
         }
         if (user.length > 0) {

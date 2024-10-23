@@ -7,6 +7,7 @@ import supabaseClient from "@/utils/supabase";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { PutBlobResult } from "@vercel/blob";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -31,6 +32,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
   const [isReadyToUpload, setIsReadyToUpload] = useState(true);
   const [usernameError, setUsernameError] = useState("");
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { toast } = useToast();
   const router = useRouter();
@@ -55,6 +57,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
         }
 
         setCurrentUser(data[0].username);
+        setLoading(false);
       }
     };
 
@@ -86,6 +89,21 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
   }, []);
 
   // console.log(userData, edit);
+
+  if (loading) {
+    return (
+      <div className="absolute left-[50%] top-[50%] -translate-x-[50%]">
+        <Image
+          src={"/icons/loader.gif"}
+          alt="loader"
+          width={100}
+          height={100}
+          className="my-5 size-12"
+        />
+      </div>
+    );
+  }
+
 
   if (userData.length > 0) {
     const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {

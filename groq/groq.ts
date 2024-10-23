@@ -13,7 +13,7 @@ export async function aiTagging(imageData: string) {
         content: [
           {
             type: "text",
-            text: "give three tags in an array without any hashtags or numbers for this image and never use the word myth. if any thing hindu just tell hindu, don't give description or anything extra ",
+            text: "give three tags in an array without any hashtags or numbers for this image. don't give description or anything extra ",
           },
           {
             type: "image_url",
@@ -29,7 +29,7 @@ export async function aiTagging(imageData: string) {
       },
     ],
     model: "llama-3.2-11b-vision-preview",
-    temperature: 1,
+    temperature: 0.5,
     max_tokens: 1024,
     top_p: 1,
     stream: false,

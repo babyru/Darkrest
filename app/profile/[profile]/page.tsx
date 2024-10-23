@@ -4,6 +4,7 @@ import Posts from "@/components/profile/Posts";
 import ProfileHeroSection from "@/components/profile/ProfileHeroSection";
 import supabaseClient from "@/utils/supabase";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -18,6 +19,7 @@ const Profile = ({
   const [userData, setUserData] = useState<UserProp>();
   const [createdPosts, setCreatedPosts] = useState<PostProp[]>();
   const [savedPost, setSavedPost] = useState<PostProp[]>();
+  const [loading, setLoading] = useState(true);
   const { session } = useSessionContext();
 
   useEffect(() => {
@@ -29,7 +31,8 @@ const Profile = ({
           .eq("id", session.user.id);
 
         if (userError) {
-          console.error(userError);
+          // console.error(userError);
+          return
         } else {
           setUser(user[0].username);
         }
@@ -47,9 +50,11 @@ const Profile = ({
         .eq("username", profile);
 
       if (userDataError) {
-        console.error(userDataError);
+        // console.error(userDataError);
+        return;
       } else {
         setUserData(userData[0]);
+        setLoading(false);
       }
     };
 
@@ -66,7 +71,8 @@ const Profile = ({
             .in("id", userData.posts);
 
         if (createdPostsError) {
-          console.error(createdPostsError);
+          // console.error(createdPostsError);
+          return;
         } else {
           setCreatedPosts(createdPosts);
         }
@@ -77,7 +83,8 @@ const Profile = ({
           .in("id", userData.saved);
 
         if (savedPostError) {
-          console.error(savedPostError);
+          // console.error(savedPostError);
+          return;
         } else {
           setSavedPost(savedPost);
         }
@@ -86,6 +93,20 @@ const Profile = ({
 
     fetchPosts();
   }, [userData]);
+
+  if (loading) {
+    return (
+      <div className="absolute left-[50%] top-[50%] -translate-x-[50%]">
+        <Image
+          src={"/icons/loader.gif"}
+          alt="loader"
+          width={100}
+          height={100}
+          className="my-5 size-12"
+        />
+      </div>
+    );
+  }
 
   if (userData) {
     // console.log("createdPosts", createdPosts);

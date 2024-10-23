@@ -15,6 +15,7 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [incLimit, setIncLimit] = useState(false);
   const [limit, setLimit] = useState(20);
+  const [loading, setLoading] = useState(true);
   const { inView, ref } = useInView();
   const router = useRouter();
   const pathname = usePathname();
@@ -80,7 +81,7 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
         // console.log(123, { data, error });
 
         if (error) {
-          console.error("Error fetching posts:", error);
+          // console.error("Error fetching posts:", error);
           return [];
         }
 
@@ -135,6 +136,7 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
 
     // console.log("sortedPosts", sortedPosts);
     setFilteredPosts(sortedPosts);
+    setLoading(false);
   }, [query, data]);
 
   const breakPoints = {
@@ -145,6 +147,20 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
   };
 
   // console.log("filteredPosts", filteredPosts);
+
+  if (loading) {
+    return (
+      <div className="absolute left-[50%] top-[50%] -translate-x-[50%]">
+        <Image
+          src={"/icons/loader.gif"}
+          alt="loader"
+          width={100}
+          height={100}
+          className="my-5 size-12"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="page-size relative mt-24 px-6 pb-20">
