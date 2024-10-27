@@ -12,6 +12,7 @@ import { debounce } from "@/utils/debounce";
 import { SearchIcon } from "lucide-react";
 import supabaseClient from "@/utils/supabase";
 import Image from "next/image";
+import { getAllPost } from "@/utils/actions/post.action";
 
 interface ItemsProp {
   items?: PostProp[];
@@ -25,7 +26,7 @@ export function CustomCombobox({ items, placeholder }: ItemsProp) {
 
   useEffect(() => {
     const fetchItems = async () => {
-      const { data, error } = await supabaseClient.from("posts").select("*");
+      const data = await getAllPost();
       if (data) {
         setFetchedItems(data);
       }

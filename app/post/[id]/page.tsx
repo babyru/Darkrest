@@ -2,14 +2,17 @@ import AllPosts from "@/components/shared/AllPosts";
 import AmbientImage from "@/components/shared/AmbientImage";
 import PostDetails from "@/components/post/PostDetails";
 import supabaseClient from "@/utils/supabase";
+import { getSinglePost } from "@/utils/actions/post.action";
 
 const PostPage = async ({ params }: { params: { id: string } }) => {
-  const { data: singlePost, error: singlePostError } = await supabaseClient
-    .from("posts")
-    .select("*")
-    .eq("id", params.id);
+  // const { data: singlePost, error: singlePostError } = await supabaseClient
+  //   .from("posts")
+  //   .select("*")
+  //   .eq("id", params.id);
 
-  // console.log({ singlePost });
+  const singlePost = await getSinglePost("id", params.id);
+
+  console.log({ singlePost });
 
   if (singlePost) {
     const { data: username, error: usernameError } = await supabaseClient

@@ -122,6 +122,57 @@ export const updatePost = async (formData: FormData) => {
   }
 };
 
+export const getAllPost = async () => {
+  try {
+    const { data, error } = await supabaseClient.from("posts").select("*");
+
+    if (error) {
+      console.log(error);
+      throw new Error("error fetching all post");
+    }
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("error fetching all post");
+  }
+};
+
+export const getSinglePost = async (key: string, value: string) => {
+  try {
+    const { data, error } = await supabaseClient
+      .from("posts")
+      .select("*")
+      .eq(key, value);
+
+    if (error) {
+      throw new Error("error fetching single post");
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error("error fetching single post");
+  }
+};
+
+
+export const getSelectedPost = async (key: string, value: string[]) => {
+  try {
+    const { data, error } = await supabaseClient
+      .from("posts")
+      .select("*")
+      .in(key, value);
+
+    if (error) {
+      throw new Error("error fetching selected post");
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error("error fetching selected post");
+  }
+};
+
 export const deletePost = async (id: string) => {
   try {
     const { data, error } = await supabaseClient

@@ -2,6 +2,7 @@
 
 import Posts from "@/components/profile/Posts";
 import ProfileHeroSection from "@/components/profile/ProfileHeroSection";
+import { getSelectedPost } from "@/utils/actions/post.action";
 import supabaseClient from "@/utils/supabase";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import Image from "next/image";
@@ -32,7 +33,7 @@ const Profile = ({
 
         if (userError) {
           // console.error(userError);
-          return
+          return;
         } else {
           setUser(user[0].username);
         }
@@ -64,30 +65,16 @@ const Profile = ({
   useEffect(() => {
     const fetchPosts = async () => {
       if (userData) {
-        const { data: createdPosts, error: createdPostsError } =
-          await supabaseClient
-            .from("posts")
-            .select("*")
-            .in("id", userData.posts);
+        // const { data: createdPosts, error: createdPostsError } =
+        //   await supabaseClient
+        //     .from("posts")
+        //     .select("*")
+        //     .in("id", userData.posts);
 
-        if (createdPostsError) {
-          // console.error(createdPostsError);
-          return;
-        } else {
-          setCreatedPosts(createdPosts);
-        }
-
-        const { data: savedPost, error: savedPostError } = await supabaseClient
-          .from("posts")
-          .select("*")
-          .in("id", userData.saved);
-
-        if (savedPostError) {
-          // console.error(savedPostError);
-          return;
-        } else {
-          setSavedPost(savedPost);
-        }
+        const createdPosts = await getSelectedPost("id", userData.posts);
+        setCreatedPosts(createdPosts);
+        const savedPost = await getSelectedPost("id", userData.saved);
+        setSavedPost(savedPost);
       }
     };
 
