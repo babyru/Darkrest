@@ -128,7 +128,7 @@ const ProfileHeroSection = ({
         className={` ${banner ? "mt-24" : "mt-7"} mx-auto flex w-[70%] flex-col items-center justify-center gap-2 text-myForeground`}
       >
         <div className="relative">
-          <h1 className="text-2xl font-bold">{name}</h1>
+          <h1 className="text-center text-2xl font-bold">{name}</h1>
           {username === currentUser ? (
             <Link
               href={`/profile/${currentUser}/edit-profile/${currentUser}`}

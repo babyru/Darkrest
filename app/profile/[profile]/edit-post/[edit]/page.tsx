@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreatePostForm from "@/components/shared/CreatePostForm";
 import supabaseClient from "@/utils/supabase";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { getSinglePost } from "@/utils/actions/post.action";
 
-const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
+const EditPostPage = ({ params }: { params: Promise<{ edit: string }> }) => {
+  const edit = React.use(params).edit;
   const [post, setPost] = useState<any>(null);
   const [userDetails, setUserDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: postData, error: postError } = await supabaseClient
-        .from("posts")
-        .select("*")
-        .eq("id", edit);
+      const postData = await getSinglePost("id", edit);
 
       if (postData) {
         setPost(postData[0]);
@@ -36,7 +35,7 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
 
   if (loading) {
     return (
-      <div className="absolute top-[50%] left-[50%] -translate-x-[50%]">
+      <div className="absolute left-[50%] top-[50%] -translate-x-[50%]">
         <Image
           src={"/icons/loader.gif"}
           alt="loader"

@@ -3,14 +3,13 @@ import AmbientImage from "@/components/shared/AmbientImage";
 import PostDetails from "@/components/post/PostDetails";
 import supabaseClient from "@/utils/supabase";
 import { getSinglePost } from "@/utils/actions/post.action";
+import React from "react";
 
-const PostPage = async ({ params }: { params: { id: string } }) => {
-  // const { data: singlePost, error: singlePostError } = await supabaseClient
-  //   .from("posts")
-  //   .select("*")
-  //   .eq("id", params.id);
+const PostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  console.log(id);
 
-  const singlePost = await getSinglePost("id", params.id);
+  const singlePost = await getSinglePost("id", id);
 
   console.log({ singlePost });
 

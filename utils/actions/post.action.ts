@@ -155,7 +155,6 @@ export const getSinglePost = async (key: string, value: string) => {
   }
 };
 
-
 export const getSelectedPost = async (key: string, value: string[]) => {
   try {
     const { data, error } = await supabaseClient
@@ -170,6 +169,23 @@ export const getSelectedPost = async (key: string, value: string[]) => {
     return data;
   } catch (error) {
     throw new Error("error fetching selected post");
+  }
+};
+
+export const getPostByLimit = async (limit: number) => {
+  try {
+    const { data, error } = await supabaseClient
+      .from("posts")
+      .select("*")
+      .limit(limit);
+    // console.log("allPosts data", { data, error });
+    if (error) {
+      throw new Error("error fetching post by limit");
+    }
+
+    return data as PostProp[];
+  } catch (error) {
+    throw new Error("error fetching post by limit");
   }
 };
 

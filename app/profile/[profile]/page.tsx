@@ -7,15 +7,17 @@ import supabaseClient from "@/utils/supabase";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Profile = ({
-  params: { profile },
-  searchParams: { page },
+  params,
+  searchParams,
 }: {
-  params: { profile: string };
-  searchParams: { page: string | undefined };
+  params: Promise<{ profile: string }>;
+  searchParams: Promise<{ page: string | undefined }>;
 }) => {
+  const profile = React.use(params).profile;
+  const page = React.use(searchParams).page;
   const [user, setUser] = useState("");
   const [userData, setUserData] = useState<UserProp>();
   const [createdPosts, setCreatedPosts] = useState<PostProp[]>();
@@ -65,12 +67,6 @@ const Profile = ({
   useEffect(() => {
     const fetchPosts = async () => {
       if (userData) {
-        // const { data: createdPosts, error: createdPostsError } =
-        //   await supabaseClient
-        //     .from("posts")
-        //     .select("*")
-        //     .in("id", userData.posts);
-
         const createdPosts = await getSelectedPost("id", userData.posts);
         setCreatedPosts(createdPosts);
         const savedPost = await getSelectedPost("id", userData.saved);

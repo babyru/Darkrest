@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Darkrest Next.js Project Documentation
 
 ## Getting Started
 
-First, run the development server:
+1. Fork the repository.
+2. Run `npm install` or `yarn install`.
+3. Run `npm run dev` or `yarn dev`.
+4. Open `http://localhost:3000` in your browser.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project Structure
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- `app`: Next.js pages
+- `components`: Reusable UI components
+- `constants`: Static and mock data
+- `lib`: Utility functions and classes
+- `public`: Static files
+- `src`: TypeScript source code
+- `types`: Type definitions
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Key Dependencies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `next`
+- `@supabase/auth-helpers-react`
+- `@supabase/supabase-js`
+- `tailwindcss`
 
-## Learn More
+## Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. Create `supabase_anon_key` and `supabase_url` environment variables.
+2. Install dependencies.
+3. Start the development server.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Required Environment Variables
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `BLOB_READ_WRITE_TOKEN`: your-supabase-service-role-key
+- `NEXT_PUBLIC_SUPABASE_URL`: https://your-supabase-instance.supabase.co
+- `NEXT_PUBLIC_SUPABASE_KEY`: your-supabase-anon-public-key
+- `NEXT_PUBLIC_GROQ_API_KEY`: your-groq-api-key

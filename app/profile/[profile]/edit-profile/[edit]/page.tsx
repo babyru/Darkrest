@@ -9,7 +9,7 @@ import { PutBlobResult } from "@vercel/blob";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 
 interface InputValuesProps {
   name: string;
@@ -17,7 +17,8 @@ interface InputValuesProps {
   bio: string;
 }
 
-const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
+const EditPostPage = ({ params }: { params: Promise<{ edit: string }> }) => {
+  const edit = React.use(params).edit;
   const { session } = useSessionContext();
   const [currentUser, setCurrentUser] = useState<string>("");
 
@@ -103,7 +104,6 @@ const EditPostPage = ({ params: { edit } }: { params: { edit: string } }) => {
       </div>
     );
   }
-
 
   if (userData.length > 0) {
     const handleAvatarUpload = (e: ChangeEvent<HTMLInputElement>) => {

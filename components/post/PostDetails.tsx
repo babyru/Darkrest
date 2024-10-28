@@ -1,6 +1,7 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
+import { getSinglePost } from "@/utils/actions/post.action";
 import supabaseClient from "@/utils/supabase";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { Download, Heart, Link2 } from "lucide-react";
@@ -245,16 +246,7 @@ const PostDetails = ({
   useEffect(() => {
     const fetchPostDetails = async () => {
       if (currentUserDetails) {
-        const { data, error } = await supabaseClient
-          .from("posts")
-          .select("*")
-          .eq("id", postDetail.id);
-
-        if (error) {
-          // console.log({ error });
-          // throw new Error("error fetching post details");
-          return;
-        }
+        const data = await getSinglePost("id", postDetail.id);
 
         if (data) {
           // console.log(data[0].likes);

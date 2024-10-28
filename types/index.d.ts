@@ -1,6 +1,6 @@
 declare type SearchParamProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
-  params: { search: string };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<{ search: string }>;
 };
 
 declare type PostProp = {

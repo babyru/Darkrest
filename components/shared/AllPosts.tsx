@@ -1,7 +1,7 @@
 "use client";
 
 import DarkCard from "@/components/shared/DarkCard";
-import { getAllPost } from "@/utils/actions/post.action";
+import { getAllPost, getPostByLimit } from "@/utils/actions/post.action";
 import supabaseClient from "@/utils/supabase";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -48,14 +48,8 @@ const AllPosts = ({ query = "" }: { query?: string }) => {
   // console.log("session", session);
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabaseClient
-        .from("posts")
-        .select("*")
-        .limit(limit);
-      // console.log("allPosts data", { data, error });
-      if (data) {
-        setData(data);
-      }
+      const data = await getPostByLimit(limit);
+      setData(data);
     };
 
     fetchData();
